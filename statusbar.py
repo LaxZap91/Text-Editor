@@ -24,5 +24,5 @@ class StatusBar(ttk.Frame):
         self.master.zoom_level.set(f"{(self.master.text.font.actual("size") - 11) * 10 + 100}%")
     
     def update_is_saved(self):
-        self.master.is_saved.set(f"Saved: {'True' if self.master.saved_state == self.master.text.get(1.0, 'end') else 'False'}")
+        self.master.is_saved.set(f"Saved: {'True' if self.master.is_not_modified() else 'False'}")
         

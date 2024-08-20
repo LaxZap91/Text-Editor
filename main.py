@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from ttkbootstrap.dialogs import MessageDialog
 from textbox import TextBox
 from statusbar import StatusBar
 
@@ -122,6 +123,7 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-0>", lambda _: self.text.set_zoom(100))
         self.bind_all("<Control-z>", lambda _: self.undo_text())
         self.bind_all("<Control-Shift-Z>", lambda _: self.redo_text())
+        self.protocol("WM_DELETE_WINDOW", self.display_check_save)
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
@@ -137,18 +139,36 @@ class TextEditorApp(ttk.Window):
     def update_clock(self):
         self.update_on_keypress()
         self.after(10, self.update_clock)
-    
+
     def undo_text(self):
         try:
             self.text.edit_undo()
         except Exception:
             pass
-    
+
     def redo_text(self):
         try:
             self.text.edit_redo()
         except Exception:
             pass
+
+    def is_not_modified(self):
+        return self.saved_state == self.text.get(1.0, "end")
+
+    def display_check_save(self):
+        if not self.is_not_modified():
+            msg_box = MessageDialog(
+               "Do you want to save changes?",
+                buttons=["Save:primary", "Don't save", "Cancel"],
+                default="Save",
+            )
+            msg_box.show()
+            result = msg_box.result
+            if result == "Save":
+                self.save_command()
+            elif result == "Cancel":
+                return
+        self.destroy()
 
 
 if __name__ == "__main__":
