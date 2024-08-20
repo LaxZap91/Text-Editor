@@ -13,9 +13,16 @@ class StatusBar(ttk.Frame):
         zoom_label = ttk.Label(self, textvariable=master.zoom_level)
         zoom_label.pack(side="left")
 
+        is_saved_label = ttk.Label(self, textvariable=master.is_saved)
+        is_saved_label.pack(side="left")
+
     def update_word_count(self):
         text = self.master.text.get(1.0, "end")
         self.master.word_count.set(f'{len(text)-sum(map(text.count, ('\n', '\t')))} characters')
     
     def update_zoom_percent(self):
         self.master.zoom_level.set(f"{(self.master.text.font.actual("size") - 11) * 10 + 100}%")
+    
+    def update_is_saved(self):
+        self.master.is_saved.set(f"Saved: {'True' if self.master.saved_state == self.master.text.get(1.0, 'end') else 'False'}")
+        
