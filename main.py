@@ -15,6 +15,7 @@ class TextEditorApp(ttk.Window):
             iconphoto="icon/icon.png",
         )
         self.word_count = ttk.StringVar(value="0 characters")
+        self.status_bar_enabled = ttk.BooleanVar(value=True)
 
         self.create_menu_bar()
         self.create_text()
@@ -32,6 +33,16 @@ class TextEditorApp(ttk.Window):
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=lambda: self.quit())
         menu.add_cascade(label="File", menu=file_menu)
+
+        view_menu = ttk.Menu(menu, tearoff=False)
+        view_menu.add_checkbutton(
+            label="Status bar",
+            offvalue=False,
+            onvalue=True,
+            variable=self.status_bar_enabled,
+            command=self.change_status_bar_visibility,
+        )
+        menu.add_cascade(label="View", menu=view_menu)
 
     def create_text(self):
         self.text = TextBox(self)
@@ -86,6 +97,12 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-S>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
         self.bind_all("<KeyPress>", lambda _: self.text.update_word_count())
+
+    def change_status_bar_visibility(self):
+        if self.status_bar_enabled.get():
+            self.create_status_bar()
+        else:
+            self.status_bar.destroy()
 
 
 if __name__ == "__main__":
