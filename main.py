@@ -20,6 +20,8 @@ class TextEditorApp(ttk.Window):
         file_menu.add_command(label="Open", command=self.open_command)
         file_menu.add_command(label="Save", command=self.save_command)
         file_menu.add_command(label="Save As", command=self.save_as_command)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=lambda: self.quit())
         menu.add_cascade(label="File", menu=file_menu)
 
     def create_text(self):
