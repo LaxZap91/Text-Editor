@@ -7,10 +7,16 @@ class TextEditorApp(ttk.Window):
     def __init__(self):
         self.file_path = None
 
-        super().__init__("Text Editor", size=(500, 500), minsize=(250, 100))
+        super().__init__(
+            "Text Editor",
+            size=(500, 500),
+            minsize=(250, 100),
+            iconphoto="icon/icon.png",
+        )
 
         self.create_menu_bar()
         self.create_text()
+        self.create_keybinds()
 
     def create_menu_bar(self):
         menu = ttk.Menu(self, tearoff=False)
@@ -30,7 +36,8 @@ class TextEditorApp(ttk.Window):
 
     def open_command(self):
         file_path = askopenfilename(
-            defaultextension=".txt", filetypes=[("Text documents (*.txt)", "*.txt")]
+            defaultextension=".txt",
+            filetypes=[("Text documents (*.txt)", "*.txt")],
         )
         if file_path.strip() == "":
             return
@@ -57,6 +64,11 @@ class TextEditorApp(ttk.Window):
             return
         with open(file_path, mode="w") as file:
             file.write(self.text.get(1.0, "end"))
+
+    def create_keybinds(self):
+        self.bind_all("<Control-O>", lambda _: self.open_command())
+        self.bind_all("<Control-S>", lambda _: self.save_command())
+        self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
 
 
 if __name__ == "__main__":
