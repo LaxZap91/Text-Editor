@@ -7,7 +7,7 @@ class TextEditorApp(ttk.Window):
     def __init__(self):
         self.file_path = None
 
-        super().__init__("Text Editor", size=(500, 500))
+        super().__init__("Text Editor", size=(500, 500), minsize=(250, 100))
 
         self.create_menu_bar()
         self.create_text()
@@ -24,31 +24,37 @@ class TextEditorApp(ttk.Window):
 
     def create_text(self):
         self.text = TextBox(self)
-        self.text.pack(fill="both")
+        self.text.pack(fill="both", expand=True)
 
     def open_command(self):
-        file_path = askopenfilename(defaultextension='.txt', filetypes=[("Text documents (*.txt)", '*.txt')])
+        file_path = askopenfilename(
+            defaultextension=".txt", filetypes=[("Text documents (*.txt)", "*.txt")]
+        )
         if file_path.strip() == "":
             return
         self.file_path = file_path
 
-        with open(self.file_path, mode='r') as file:
+        with open(self.file_path, mode="r") as file:
             self.text.delete(1.0, "end")
             self.text.insert("end", file.read())
-    
+
     def save_command(self):
-        if self.file_path is not None:    
-            with open(self.file_path, 'w') as file:
-                file.write(self.text.get(1.0, 'end'))
+        if self.file_path is not None:
+            with open(self.file_path, "w") as file:
+                file.write(self.text.get(1.0, "end"))
         else:
             self.save_as_command()
-    
+
     def save_as_command(self):
-        file_path = asksaveasfilename(confirmoverwrite=True, defaultextension='.txt', filetypes=[("Text documents (*.txt)", '*.txt')])
+        file_path = asksaveasfilename(
+            confirmoverwrite=True,
+            defaultextension=".txt",
+            filetypes=[("Text documents (*.txt)", "*.txt")],
+        )
         if file_path.strip() == "":
             return
-        with open(file_path, mode='w') as file:
-            file.write(self.text.get(1.0, 'end'))
+        with open(file_path, mode="w") as file:
+            file.write(self.text.get(1.0, "end"))
 
 
 if __name__ == "__main__":
