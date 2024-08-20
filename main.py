@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from text import TextBox
+from textbox import TextBox
+from statusbar import StatusBar
 
 
 class TextEditorApp(ttk.Window):
@@ -13,9 +14,11 @@ class TextEditorApp(ttk.Window):
             minsize=(250, 100),
             iconphoto="icon/icon.png",
         )
+        self.word_count = ttk.StringVar(value="0 characters")
 
         self.create_menu_bar()
         self.create_text()
+        self.create_status_bar()
         self.create_keybinds()
 
     def create_menu_bar(self):
@@ -34,6 +37,10 @@ class TextEditorApp(ttk.Window):
         self.text = TextBox(self)
         self.text.pack(fill="both", expand=True)
 
+    def create_status_bar(self):
+        self.status_bar = StatusBar(self)
+        self.status_bar.pack(fill="both")
+
     def open_command(self):
         file_path = askopenfilename(
             defaultextension=".txt",
@@ -50,6 +57,7 @@ class TextEditorApp(ttk.Window):
         with open(self.file_path, mode="r") as file:
             self.text.delete(1.0, "end")
             self.text.insert("end", file.read())
+        self.text.update_word_count()
 
     def save_command(self):
         if self.file_path is not None:
@@ -77,6 +85,7 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-O>", lambda _: self.open_command())
         self.bind_all("<Control-S>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
+        self.bind_all("<KeyPress>", lambda _: self.text.update_word_count())
 
 
 if __name__ == "__main__":
