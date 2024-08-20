@@ -1,11 +1,24 @@
 from ttkbootstrap.scrolled import ScrolledText
-import random
+from tkinter.font import Font
+
 
 class TextBox(ScrolledText):
     def __init__(self, master):
-        super().__init__(master, undo=True, maxundo=-1, autohide=True, wrap='none', height=1)
+        self.font = Font(family="Consolas", size=11)
         self.master = master
-    
-    def update_word_count(self):
-        text = self.get(1.0, 'end')
-        self.master.word_count.set(f'{len(text)-sum(map(text.count, ('\n', '\t')))} characters')
+
+        super().__init__(
+            master,
+            undo=True,
+            maxundo=-1,
+            autohide=True,
+            wrap="none",
+            height=1,
+            font=self.font,
+        )
+
+    def increment_zoom(self, size):
+        self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
+
+    def set_zoom(self, size):
+        self.font.configure(size=max(1, min(51, int((size - 100) / 10 + 11))))

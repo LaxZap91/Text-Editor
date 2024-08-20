@@ -15,12 +15,15 @@ class TextEditorApp(ttk.Window):
             iconphoto="icon/icon.png",
         )
         self.word_count = ttk.StringVar(value="0 characters")
+        self.zoom_level = ttk.StringVar(value="100%")
         self.status_bar_enabled = ttk.BooleanVar(value=True)
 
         self.create_menu_bar()
         self.create_text()
         self.create_status_bar()
         self.create_keybinds()
+
+        self.update_clock()
 
     def create_menu_bar(self):
         menu = ttk.Menu(self, tearoff=False)
@@ -35,6 +38,19 @@ class TextEditorApp(ttk.Window):
         menu.add_cascade(label="File", menu=file_menu)
 
         view_menu = ttk.Menu(menu, tearoff=False)
+
+        zoom_menu = ttk.Menu(view_menu, tearoff=False)
+        zoom_menu.add_command(
+            label="Zoom in", command=lambda: self.text.increment_zoom(1)
+        )
+        zoom_menu.add_command(
+            label="Zoom out", command=lambda: self.text.increment_zoom(-1)
+        )
+        zoom_menu.add_command(
+            label="Restore default zoom", command=lambda: self.text.set_zoom(100)
+        )
+        view_menu.add_cascade(label="Zoom", menu=zoom_menu)
+
         view_menu.add_checkbutton(
             label="Status bar",
             offvalue=False,
@@ -50,7 +66,7 @@ class TextEditorApp(ttk.Window):
 
     def create_status_bar(self):
         self.status_bar = StatusBar(self)
-        self.status_bar.pack(fill="both")
+        self.status_bar.pack(fill="x")
 
     def open_command(self):
         file_path = askopenfilename(
@@ -96,13 +112,24 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-O>", lambda _: self.open_command())
         self.bind_all("<Control-S>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
-        self.bind_all("<KeyPress>", lambda _: self.text.update_word_count())
+        self.bind_all("<KeyPress>", lambda _: self.update_on_keypress())
+        self.bind_all("<Control-=>", lambda _: self.text.increment_zoom(1))
+        self.bind_all("<Control-minus>", lambda _: self.text.increment_zoom(-1))
+        self.bind_all("<Control-0>", lambda _: self.text.set_zoom(100))
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
             self.create_status_bar()
         else:
             self.status_bar.destroy()
+
+    def update_on_keypress(self):
+        self.status_bar.update_word_count()
+        self.status_bar.update_zoom_percent()
+
+    def update_clock(self):
+        self.update_on_keypress()
+        self.after(10, self.update_clock)
 
 
 if __name__ == "__main__":
