@@ -37,7 +37,11 @@ class TextEditorApp(ttk.Window):
     def open_command(self):
         file_path = askopenfilename(
             defaultextension=".txt",
-            filetypes=[("Text documents (*.txt)", "*.txt")],
+            filetypes=[
+                ("Text documents (*.txt)", "*.txt"),
+                ("Markdown documents (*.md)", "*.md"),
+                ("All files (*)", "*"),
+            ],
         )
         if file_path.strip() == "":
             return
@@ -58,7 +62,11 @@ class TextEditorApp(ttk.Window):
         file_path = asksaveasfilename(
             confirmoverwrite=True,
             defaultextension=".txt",
-            filetypes=[("Text documents (*.txt)", "*.txt")],
+            filetypes=[
+                ("Text documents (*.txt)", "*.txt"),
+                ("Markdown documents (*.md)", "*.md"),
+                ("All files (*)", "*"),
+            ],
         )
         if file_path.strip() == "":
             return
