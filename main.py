@@ -1,8 +1,8 @@
 import ttkbootstrap as ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from ttkbootstrap.dialogs import MessageDialog
-from textbox import TextBox
-from statusbar import StatusBar
+from text_box import TextBox
+from status_bar import StatusBar
 
 
 class TextEditorApp(ttk.Window):
@@ -18,8 +18,8 @@ class TextEditorApp(ttk.Window):
         self.word_count = ttk.StringVar(value="0 characters")
         self.zoom_level = ttk.StringVar(value="100%")
         self.is_saved = ttk.StringVar(value="Saved: False")
-        self.saved_state = ""
         self.status_bar_enabled = ttk.BooleanVar(value=True)
+        self.saved_state = "\n"
 
         self.create_menu_bar()
         self.create_textbox()
@@ -122,6 +122,7 @@ class TextEditorApp(ttk.Window):
                 ("Markdown documents (*.md)", "*.md"),
                 ("All files (*)", "*"),
             ],
+            initialfile=self.textbox.text.get(1.0, "end").split("\n")[0],
         )
         if file_path.strip() == "":
             return
