@@ -36,8 +36,12 @@ class TextEditorApp(ttk.Window):
         file_menu.add_command(
             label="Open", command=self.open_command, accelerator="Ctrl+O"
         )
-        file_menu.add_command(label="Save", command=self.save_command, accelerator="Ctrl+S")
-        file_menu.add_command(label="Save As", command=self.save_as_command, accelerator="Ctrl+Shift+O")
+        file_menu.add_command(
+            label="Save", command=self.save_command, accelerator="Ctrl+S"
+        )
+        file_menu.add_command(
+            label="Save As", command=self.save_as_command, accelerator="Ctrl+Shift+O"
+        )
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=lambda: self.quit())
         menu.add_cascade(label="File", menu=file_menu)
@@ -46,15 +50,24 @@ class TextEditorApp(ttk.Window):
 
         zoom_menu = ttk.Menu(view_menu, tearoff=False)
         zoom_menu.add_command(
-            label="Zoom in", command=lambda: self.textbox.increment_zoom(1), accelerator="Ctrl+Plus"
+            label="Zoom in",
+            command=lambda: self.textbox.increment_zoom(1),
+            accelerator="Ctrl+Plus",
         )
         zoom_menu.add_command(
-            label="Zoom out", command=lambda: self.textbox.increment_zoom(-1), accelerator="Ctrl+Minus"
+            label="Zoom out",
+            command=lambda: self.textbox.increment_zoom(-1),
+            accelerator="Ctrl+Minus",
         )
         zoom_menu.add_command(
-            label="Restore default zoom", command=lambda: self.textbox.set_zoom(100), accelerator="Ctrl+0"
+            label="Restore default zoom",
+            command=lambda: self.textbox.set_zoom(100),
+            accelerator="Ctrl+0",
         )
-        view_menu.add_cascade(label="Zoom", menu=zoom_menu, )
+        view_menu.add_cascade(
+            label="Zoom",
+            menu=zoom_menu,
+        )
 
         view_menu.add_checkbutton(
             label="Status bar",
@@ -71,7 +84,7 @@ class TextEditorApp(ttk.Window):
 
     def create_status_bar(self):
         self.status_bar = StatusBar(self)
-        self.status_bar.pack(fill="x")
+        self.status_bar.pack(fill="both")
 
     def open_command(self):
         file_path = askopenfilename(
@@ -129,16 +142,15 @@ class TextEditorApp(ttk.Window):
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
-            self.create_status_bar()
+            self.status_bar.pack(fill="both")
         else:
-            self.status_bar.destroy()
+            self.status_bar.pack_forget()
 
     def update_clock(self):
         self.status_bar.update_word_count()
         self.status_bar.update_zoom_percent()
         self.status_bar.update_is_saved()
-        self.textbox.is_scroll_needed()
-        self.after(1000, self.update_clock)
+        self.after(10, self.update_clock)
 
     def undo_text(self):
         try:
