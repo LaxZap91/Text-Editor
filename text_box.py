@@ -5,16 +5,25 @@ from status_bar import StatusBar
 
 class TextBox(ttk.Frame):
     def __init__(self, master):
-        self.font = Font(family="Consolas", size=11)
         self.master = master
 
         self.scroll_needed = False
+        self.saved_state = "\n"
 
         super().__init__(master)
 
+        self.word_count = ttk.StringVar(value="0 characters")
+        self.zoom_level = ttk.StringVar(value="100%")
+        self.is_saved = ttk.StringVar(value="Saved: False")
+        self.status_bar_enabled = ttk.BooleanVar(value=True)
+
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
+        
+        self.status_bar = StatusBar(self, master)
+        self.status_bar.pack(fill="x", side="bottom")
 
+        self.font = Font(family="Consolas", size=11)
         self.text = ttk.Text(
             self,
             undo=True,
@@ -24,15 +33,13 @@ class TextBox(ttk.Frame):
             width=1,
             height=1,
         )
-        self.text.pack(side="left", fill="both", expand=True)
+        self.text.pack(anchor="nw", fill="both", expand=True, side="left")
 
         self.scroll_bar = ttk.Scrollbar(self)
-        self.scroll_bar.pack(side="left", fill="y")
+        self.scroll_bar.pack(anchor="ne", fill="y", side="left")
         self.scroll_bar.configure(command=self.scroll)
         self.text.configure(yscrollcommand=self.update_scroll)
-        
-        self.status_bar = StatusBar(self)
-        self.status_bar.pack(fill="both")
+
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
@@ -52,6 +59,40 @@ class TextBox(ttk.Frame):
 
     def change_scroll_bar_visibility(self):
         if self.scroll_needed:
-            self.scroll_bar.pack(side="left", fill="y")
+            self.scroll_bar.pack(anchor="ne", fill="y", side="left")
         else:
             self.scroll_bar.pack_forget()
+
+    def change_status_bar_visibility(self):
+        if self.status_bar_enabled.get():
+            self.status_bar.pack_forget()
+            self.text.pack_forget()
+            self.scroll_bar.pack_forget()
+            
+            
+            self.status_bar.pack(fill="x", side="bottom")
+            self.text.pack(anchor="nw", fill="both", expand=True, side="left")
+            self.scroll_bar.pack(anchor="ne", fill="y", side="left")
+        else:
+            self.status_bar.pack_forget()
+
+    def get_text(self):
+        return self.text.get(1.0, "end")
+
+    def clear_text(self):
+        self.text.delete(1.0, "end")
+
+    def is_not_modified(self):
+        return self.saved_state == self.get_text()
+
+    def undo_text(self):
+        try:
+            self.text.edit_undo()
+        except Exception:
+            pass
+
+    def redo_text(self):
+        try:
+            self.text.edit_redo()
+        except Exception:
+            pass

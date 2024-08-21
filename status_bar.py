@@ -2,8 +2,9 @@ import ttkbootstrap as ttk
 
 
 class StatusBar(ttk.Frame):
-    def __init__(self, master):
+    def __init__(self, master, window):
         self.master = master
+        self.window = window
         
         super().__init__(master)
 
@@ -17,11 +18,11 @@ class StatusBar(ttk.Frame):
         is_saved_label.grid(row=0, column=2, sticky='nsew')
 
     def update_word_count(self):
-        text = self.master.textbox.text.get(1.0, "end")
+        text = self.master.get_text()
         self.master.word_count.set(f'{len(text)-sum(map(text.count, ('\n', '\t')))} characters')
     
     def update_zoom_percent(self):
-        self.master.zoom_level.set(f"{(self.master.textbox.font.actual("size") - 11) * 10 + 100}%")
+        self.master.zoom_level.set(f"{(self.master.font.actual("size") - 11) * 10 + 100}%")
     
     def update_is_saved(self):
         self.master.is_saved.set(f"Saved: {'True' if self.master.is_not_modified() else 'False'}")

@@ -2,11 +2,11 @@ import ttkbootstrap as ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from ttkbootstrap.dialogs import MessageDialog
 from text_box import TextBox
-from status_bar import StatusBar
 
 
 class TextEditorApp(ttk.Window):
     def __init__(self):
+
         self.file_path = None
 
         super().__init__(
@@ -15,14 +15,9 @@ class TextEditorApp(ttk.Window):
             minsize=(250, 100),
             iconphoto="icon/icon.png",
         )
-        self.word_count = ttk.StringVar(value="0 characters")
-        self.zoom_level = ttk.StringVar(value="100%")
-        self.is_saved = ttk.StringVar(value="Saved: False")
-        self.status_bar_enabled = ttk.BooleanVar(value=True)
-        self.saved_state = "\n"
 
-        self.create_menu_bar()
         self.create_textbox()
+        self.create_menu_bar()
         self.create_keybinds()
 
         self.update_clock()
@@ -72,8 +67,8 @@ class TextEditorApp(ttk.Window):
             label="Status bar",
             offvalue=False,
             onvalue=True,
-            variable=self.status_bar_enabled,
-            command=self.change_status_bar_visibility,
+            variable=self.textbox.status_bar_enabled,
+            command=self.textbox.change_status_bar_visibility,
         )
         menu.add_cascade(label="View", menu=view_menu)
 
@@ -95,18 +90,18 @@ class TextEditorApp(ttk.Window):
         self.file_path = file_path
 
         with open(self.file_path, mode="r") as file:
-            self.textbox.text.delete(1.0, "end")
+            self.textbox.clear_text()
             self.textbox.text.insert("end", file.read())
-        self.status_bar.update_word_count()
-        self.saved_state = self.textbox.text.get(1.0, "end")
+        self.textbox.status_bar.update_word_count()
+        self.saved_state = self.textbox.get_text()
 
     def save_command(self):
         if self.file_path is not None:
             with open(self.file_path, "w") as file:
-                file.write(self.textbox.text.get(1.0, "end"))
+                file.write(self.textbox.get_text())
         else:
             self.save_as_command()
-        self.saved_state = self.textbox.text.get(1.0, "end")
+        self.saved_state = self.textbox.get_text()
 
     def save_as_command(self):
         file_path = asksaveasfilename(
@@ -117,12 +112,12 @@ class TextEditorApp(ttk.Window):
                 ("Markdown documents (*.md)", "*.md"),
                 ("All files (*)", "*"),
             ],
-            initialfile=self.textbox.text.get(1.0, "end").split("\n")[0],
+            initialfile=self.textbox.get_text().split("\n")[0],
         )
         if file_path.strip() == "":
             return
         with open(file_path, mode="w") as file:
-            file.write(self.text.get(1.0, "end"))
+            file.write(self.textbox.get_text())
 
     def create_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
@@ -131,40 +126,19 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-=>", lambda _: self.textbox.increment_zoom(1))
         self.bind_all("<Control-minus>", lambda _: self.textbox.increment_zoom(-1))
         self.bind_all("<Control-0>", lambda _: self.textbox.set_zoom(100))
-        self.bind_all("<Control-z>", lambda _: self.undo_text())
-        self.bind_all("<Control-Shift-Z>", lambda _: self.redo_text())
+        self.bind_all("<Control-z>", lambda _: self.textbox.undo_text())
+        self.bind_all("<Control-Shift-Z>", lambda _: self.textbox.redo_text())
 
         self.protocol("WM_DELETE_WINDOW", self.display_check_save)
 
-    def change_status_bar_visibility(self):
-        if self.status_bar_enabled.get():
-            self.status_bar.pack(fill="both")
-        else:
-            self.status_bar.pack_forget()
-
     def update_clock(self):
-        self.status_bar.update_word_count()
-        self.status_bar.update_zoom_percent()
-        self.status_bar.update_is_saved()
+        self.textbox.status_bar.update_word_count()
+        self.textbox.status_bar.update_zoom_percent()
+        self.textbox.status_bar.update_is_saved()
         self.after(10, self.update_clock)
 
-    def undo_text(self):
-        try:
-            self.textbox.text.edit_undo()
-        except Exception:
-            pass
-
-    def redo_text(self):
-        try:
-            self.textbox.text.edit_redo()
-        except Exception:
-            pass
-
-    def is_not_modified(self):
-        return self.saved_state == self.textbox.text.get(1.0, "end")
-
     def display_check_save(self):
-        if not self.is_not_modified():
+        if not self.textbox.is_not_modified():
             msg_box = MessageDialog(
                 "Do you want to save changes?",
                 buttons=["Save:primary", "Don't save", "Cancel"],
