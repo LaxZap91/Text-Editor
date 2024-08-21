@@ -22,7 +22,7 @@ class TextEditorApp(ttk.Window):
         self.status_bar_enabled = ttk.BooleanVar(value=True)
 
         self.create_menu_bar()
-        self.create_text()
+        self.create_textbox()
         self.create_status_bar()
         self.create_keybinds()
 
@@ -36,8 +36,12 @@ class TextEditorApp(ttk.Window):
         file_menu.add_command(
             label="Open", command=self.open_command, accelerator="Ctrl+O"
         )
-        file_menu.add_command(label="Save", command=self.save_command, accelerator="Ctrl+S")
-        file_menu.add_command(label="Save As", command=self.save_as_command, accelerator="Ctrl+Shift+O")
+        file_menu.add_command(
+            label="Save", command=self.save_command, accelerator="Ctrl+S"
+        )
+        file_menu.add_command(
+            label="Save As", command=self.save_as_command, accelerator="Ctrl+Shift+O"
+        )
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=lambda: self.quit())
         menu.add_cascade(label="File", menu=file_menu)
@@ -46,15 +50,24 @@ class TextEditorApp(ttk.Window):
 
         zoom_menu = ttk.Menu(view_menu, tearoff=False)
         zoom_menu.add_command(
-            label="Zoom in", command=lambda: self.text.increment_zoom(1), accelerator="Ctrl+Plus"
+            label="Zoom in",
+            command=lambda: self.textbox.increment_zoom(1),
+            accelerator="Ctrl+Plus",
         )
         zoom_menu.add_command(
-            label="Zoom out", command=lambda: self.text.increment_zoom(-1), accelerator="Ctrl+Minus"
+            label="Zoom out",
+            command=lambda: self.textbox.increment_zoom(-1),
+            accelerator="Ctrl+Minus",
         )
         zoom_menu.add_command(
-            label="Restore default zoom", command=lambda: self.text.set_zoom(100), accelerator="Ctrl+0"
+            label="Restore default zoom",
+            command=lambda: self.textbox.set_zoom(100),
+            accelerator="Ctrl+0",
         )
-        view_menu.add_cascade(label="Zoom", menu=zoom_menu, )
+        view_menu.add_cascade(
+            label="Zoom",
+            menu=zoom_menu,
+        )
 
         view_menu.add_checkbutton(
             label="Status bar",
@@ -65,13 +78,13 @@ class TextEditorApp(ttk.Window):
         )
         menu.add_cascade(label="View", menu=view_menu)
 
-    def create_text(self):
-        self.text = TextBox(self)
-        self.text.pack(fill="both", expand=True)
+    def create_textbox(self):
+        self.textbox = TextBox(self)
+        self.textbox.pack(fill="both", expand=True)
 
     def create_status_bar(self):
         self.status_bar = StatusBar(self)
-        self.status_bar.pack(fill="x")
+        self.status_bar.pack(fill="both")
 
     def open_command(self):
         file_path = askopenfilename(
@@ -87,18 +100,18 @@ class TextEditorApp(ttk.Window):
         self.file_path = file_path
 
         with open(self.file_path, mode="r") as file:
-            self.text.delete(1.0, "end")
-            self.text.insert("end", file.read())
+            self.textbox.text.delete(1.0, "end")
+            self.textbox.text.insert("end", file.read())
         self.status_bar.update_word_count()
-        self.saved_state = self.text.get(1.0, "end")
+        self.saved_state = self.textbox.text.get(1.0, "end")
 
     def save_command(self):
         if self.file_path is not None:
             with open(self.file_path, "w") as file:
-                file.write(self.text.get(1.0, "end"))
+                file.write(self.textbox.text.get(1.0, "end"))
         else:
             self.save_as_command()
-        self.saved_state = self.text.get(1.0, "end")
+        self.saved_state = self.textbox.text.get(1.0, "end")
 
     def save_as_command(self):
         file_path = asksaveasfilename(
@@ -119,9 +132,9 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-o>", lambda _: self.open_command())
         self.bind_all("<Control-s>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
-        self.bind_all("<Control-=>", lambda _: self.text.increment_zoom(1))
-        self.bind_all("<Control-minus>", lambda _: self.text.increment_zoom(-1))
-        self.bind_all("<Control-0>", lambda _: self.text.set_zoom(100))
+        self.bind_all("<Control-=>", lambda _: self.textbox.increment_zoom(1))
+        self.bind_all("<Control-minus>", lambda _: self.textbox.increment_zoom(-1))
+        self.bind_all("<Control-0>", lambda _: self.textbox.set_zoom(100))
         self.bind_all("<Control-z>", lambda _: self.undo_text())
         self.bind_all("<Control-Shift-Z>", lambda _: self.redo_text())
 
@@ -129,9 +142,9 @@ class TextEditorApp(ttk.Window):
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
-            self.create_status_bar()
+            self.status_bar.pack(fill="both")
         else:
-            self.status_bar.destroy()
+            self.status_bar.pack_forget()
 
     def update_clock(self):
         self.status_bar.update_word_count()
@@ -141,18 +154,18 @@ class TextEditorApp(ttk.Window):
 
     def undo_text(self):
         try:
-            self.text.edit_undo()
+            self.textbox.text.edit_undo()
         except Exception:
             pass
 
     def redo_text(self):
         try:
-            self.text.edit_redo()
+            self.textbox.text.edit_redo()
         except Exception:
             pass
 
     def is_not_modified(self):
-        return self.saved_state == self.text.get(1.0, "end")
+        return self.saved_state == self.textbox.text.get(1.0, "end")
 
     def display_check_save(self):
         if not self.is_not_modified():
