@@ -23,7 +23,6 @@ class TextEditorApp(ttk.Window):
 
         self.create_menu_bar()
         self.create_textbox()
-        self.create_status_bar()
         self.create_keybinds()
 
         self.update_clock()
@@ -81,10 +80,6 @@ class TextEditorApp(ttk.Window):
     def create_textbox(self):
         self.textbox = TextBox(self)
         self.textbox.pack(fill="both", expand=True)
-
-    def create_status_bar(self):
-        self.status_bar = StatusBar(self)
-        self.status_bar.pack(fill="both")
 
     def open_command(self):
         file_path = askopenfilename(

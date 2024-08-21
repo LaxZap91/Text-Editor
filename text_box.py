@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from tkinter.font import Font
+from status_bar import StatusBar
 
 
 class TextBox(ttk.Frame):
@@ -29,6 +30,9 @@ class TextBox(ttk.Frame):
         self.scroll_bar.pack(side="left", fill="y")
         self.scroll_bar.configure(command=self.scroll)
         self.text.configure(yscrollcommand=self.update_scroll)
+        
+        self.status_bar = StatusBar(self)
+        self.status_bar.pack(fill="both")
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
