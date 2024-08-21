@@ -19,7 +19,7 @@ class TextBox(ttk.Frame):
 
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
-        
+
         self.status_bar = StatusBar(self, master)
         self.status_bar.pack(fill="x", side="bottom")
 
@@ -39,7 +39,6 @@ class TextBox(ttk.Frame):
         self.scroll_bar.pack(anchor="ne", fill="y", side="left")
         self.scroll_bar.configure(command=self.scroll)
         self.text.configure(yscrollcommand=self.update_scroll)
-
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
@@ -68,8 +67,7 @@ class TextBox(ttk.Frame):
             self.status_bar.pack_forget()
             self.text.pack_forget()
             self.scroll_bar.pack_forget()
-            
-            
+
             self.status_bar.pack(fill="x", side="bottom")
             self.text.pack(anchor="nw", fill="both", expand=True, side="left")
             self.scroll_bar.pack(anchor="ne", fill="y", side="left")

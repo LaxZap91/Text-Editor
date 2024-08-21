@@ -93,15 +93,15 @@ class TextEditorApp(ttk.Window):
             self.textbox.clear_text()
             self.textbox.text.insert("end", file.read())
         self.textbox.status_bar.update_word_count()
-        self.saved_state = self.textbox.get_text()
+        self.textbox.saved_state = self.textbox.get_text()
 
     def save_command(self):
         if self.file_path is not None:
             with open(self.file_path, "w") as file:
                 file.write(self.textbox.get_text())
+            self.textbox.saved_state = self.textbox.get_text()
         else:
             self.save_as_command()
-        self.saved_state = self.textbox.get_text()
 
     def save_as_command(self):
         file_path = asksaveasfilename(
@@ -118,6 +118,7 @@ class TextEditorApp(ttk.Window):
             return
         with open(file_path, mode="w") as file:
             file.write(self.textbox.get_text())
+        self.textbox.saved_state = self.textbox.get_text()
 
     def create_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
