@@ -13,7 +13,7 @@ class MenuBar(ttk.Menu):
             label="Save", command=master.save_command, accelerator="Ctrl+S"
         )
         file_menu.add_command(
-            label="Save As", command=master.save_as_command, accelerator="Ctrl+Shift+O"
+            label="Save as", command=master.save_as_command, accelerator="Ctrl+Shift+O"
         )
         file_menu.add_separator()
         file_menu.add_command(label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,")
