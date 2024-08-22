@@ -18,7 +18,6 @@ class TextBox(ttk.Frame):
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
 
-
         self.text_box_frame = ttk.Frame(self)
 
         self.font = Font(family="Consolas", size=11)
@@ -44,7 +43,7 @@ class TextBox(ttk.Frame):
         self.text.configure(xscrollcommand=self.update_hscroll)
 
         self.text_box_frame.pack(fill="both", side="top", expand=True)
-        
+
         self.status_bar = StatusBar(self, master)
         self.status_bar.pack(fill="x", side="bottom")
 

@@ -19,21 +19,21 @@ class TextEditorApp(ttk.Window):
             iconphoto="icon/icon.png",
         )
 
-        self.create_editor()
+        self.create_plain_text_editor()
 
         self.update_clock()
 
-    def create_editor(self):
+    def create_plain_text_editor(self):
         self.textbox = TextBox(self)
         self.menu = MenuBar(self)
-        self.place_editor()
+        self.place_plain_text_editor()
 
-    def place_editor(self):
+    def place_plain_text_editor(self):
         self.textbox.pack(fill="both", expand=True)
         self.configure(menu=self.menu)
         self.create_keybinds()
 
-    def remove_editor(self):
+    def remove_plain_text_editor(self):
         self.textbox.pack_forget()
         self.configure(menu="")
         self.remove_keybinds()
@@ -41,7 +41,7 @@ class TextEditorApp(ttk.Window):
     def new_file_command(self):
         if self.save_prompt() == "Cancel":
             return
-        
+
         self.textbox.clear_text()
         self.file_path = None
         self.textbox.status_bar.update_word_count()
@@ -116,7 +116,7 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-z>", lambda _: self.textbox.undo_text())
         self.bind_all("<Control-Shift-Z>", lambda _: self.textbox.redo_text())
 
-        self.protocol("WM_DELETE_WINDOW", self.editor_on_close)
+        self.protocol("WM_DELETE_WINDOW", self.plain_text_editor_on_close)
 
     def remove_keybinds(self):
         self.unbind_all("<Control-o>")
@@ -136,11 +136,11 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_is_saved()
         self.after(10, self.update_clock)
 
-    def editor_on_close(self):
+    def plain_text_editor_on_close(self):
         if self.save_prompt() == "Cancel":
             return
         self.destroy()
-    
+
     def save_prompt(self):
         if not self.textbox.is_not_modified():
             msg_box = MessageDialog(
@@ -153,7 +153,7 @@ class TextEditorApp(ttk.Window):
             if result == "Save":
                 self.save_command()
             elif result == "Cancel":
-                return 'Cancel'
+                return "Cancel"
 
 
 if __name__ == "__main__":
