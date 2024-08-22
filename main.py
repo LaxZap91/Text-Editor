@@ -4,6 +4,8 @@ from ttkbootstrap.dialogs import MessageDialog
 from text_box import TextBox
 from menu_bar import MenuBar
 
+from os.path import basename
+
 
 class TextEditorApp(ttk.Window):
     def __init__(self):
@@ -11,7 +13,7 @@ class TextEditorApp(ttk.Window):
         self.file_path = None
 
         super().__init__(
-            "Text Editor",
+            "New File - Text Editor",
             size=(500, 500),
             minsize=(250, 100),
             iconphoto="icon/icon.png",
@@ -36,6 +38,17 @@ class TextEditorApp(ttk.Window):
         self.configure(menu="")
         self.remove_keybinds()
 
+    def new_file_command(self):
+        if self.save_prompt() == "Cancel":
+            return
+        
+        self.textbox.clear_text()
+        self.file_path = None
+        self.textbox.status_bar.update_word_count()
+        self.textbox.saved_state = "\n"
+        self.textbox.status_bar.update_file_path()
+        self.title("New File - Text Editor")
+
     def open_command(self):
         file_path = askopenfilename(
             defaultextension=".txt",
@@ -55,6 +68,9 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_word_count()
         self.textbox.saved_state = self.textbox.get_text()
         self.textbox.status_bar.update_file_path()
+        self.title(
+            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+        )
 
     def save_command(self):
         if self.file_path is not None:
@@ -62,6 +78,9 @@ class TextEditorApp(ttk.Window):
                 file.write(self.textbox.get_text())
             self.textbox.saved_state = self.textbox.get_text()
             self.textbox.status_bar.update_file_path()
+            self.title(
+                f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+            )
         else:
             self.save_as_command()
 
@@ -83,6 +102,9 @@ class TextEditorApp(ttk.Window):
             file.write(self.textbox.get_text())
         self.textbox.saved_state = self.textbox.get_text()
         self.textbox.status_bar.update_file_path()
+        self.title(
+            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+        )
 
     def create_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
@@ -115,6 +137,11 @@ class TextEditorApp(ttk.Window):
         self.after(10, self.update_clock)
 
     def editor_on_close(self):
+        if self.save_prompt() == "Cancel":
+            return
+        self.destroy()
+    
+    def save_prompt(self):
         if not self.textbox.is_not_modified():
             msg_box = MessageDialog(
                 "Do you want to save changes?",
@@ -126,8 +153,7 @@ class TextEditorApp(ttk.Window):
             if result == "Save":
                 self.save_command()
             elif result == "Cancel":
-                return
-        self.destroy()
+                return 'Cancel'
 
 
 if __name__ == "__main__":

@@ -7,6 +7,9 @@ class MenuBar(ttk.Menu):
 
         file_menu = ttk.Menu(self, tearoff=False)
         file_menu.add_command(
+            label="New file", command=master.new_file_command, accelerator="Ctrl+N"
+        )
+        file_menu.add_command(
             label="Open", command=master.open_command, accelerator="Ctrl+O"
         )
         file_menu.add_command(
@@ -16,7 +19,9 @@ class MenuBar(ttk.Menu):
             label="Save as", command=master.save_as_command, accelerator="Ctrl+Shift+O"
         )
         file_menu.add_separator()
-        file_menu.add_command(label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,")
+        file_menu.add_command(
+            label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,"
+        )
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=master.destroy)
         self.add_cascade(label="File", menu=file_menu)
