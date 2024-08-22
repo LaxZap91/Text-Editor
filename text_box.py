@@ -13,16 +13,11 @@ class TextBox(ttk.Frame):
 
         super().__init__(master)
 
-        self.word_count = ttk.StringVar(value="0 characters")
-        self.zoom_level = ttk.StringVar(value="100%")
-        self.is_saved = ttk.StringVar(value="Saved: False")
         self.status_bar_enabled = ttk.BooleanVar(value=True)
 
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
 
-        self.status_bar = StatusBar(self, master)
-        self.status_bar.pack(fill="x", side="bottom")
 
         self.text_box_frame = ttk.Frame(self)
 
@@ -49,6 +44,9 @@ class TextBox(ttk.Frame):
         self.text.configure(xscrollcommand=self.update_hscroll)
 
         self.text_box_frame.pack(fill="both", side="top", expand=True)
+        
+        self.status_bar = StatusBar(self, master)
+        self.status_bar.pack(fill="x", side="bottom")
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
