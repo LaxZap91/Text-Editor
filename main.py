@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from ttkbootstrap.dialogs import MessageDialog
 from text_box import TextBox
+from menu_bar import MenuBar
 
 
 class TextEditorApp(ttk.Window):
@@ -23,54 +24,8 @@ class TextEditorApp(ttk.Window):
         self.update_clock()
 
     def create_menu_bar(self):
-        menu = ttk.Menu(self, tearoff=False)
-        self.configure(menu=menu)
-
-        file_menu = ttk.Menu(menu, tearoff=False)
-        file_menu.add_command(
-            label="Open", command=self.open_command, accelerator="Ctrl+O"
-        )
-        file_menu.add_command(
-            label="Save", command=self.save_command, accelerator="Ctrl+S"
-        )
-        file_menu.add_command(
-            label="Save As", command=self.save_as_command, accelerator="Ctrl+Shift+O"
-        )
-        file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=lambda: self.quit())
-        menu.add_cascade(label="File", menu=file_menu)
-
-        view_menu = ttk.Menu(menu, tearoff=False)
-
-        zoom_menu = ttk.Menu(view_menu, tearoff=False)
-        zoom_menu.add_command(
-            label="Zoom in",
-            command=lambda: self.textbox.increment_zoom(1),
-            accelerator="Ctrl+Plus",
-        )
-        zoom_menu.add_command(
-            label="Zoom out",
-            command=lambda: self.textbox.increment_zoom(-1),
-            accelerator="Ctrl+Minus",
-        )
-        zoom_menu.add_command(
-            label="Restore default zoom",
-            command=lambda: self.textbox.set_zoom(100),
-            accelerator="Ctrl+0",
-        )
-        view_menu.add_cascade(
-            label="Zoom",
-            menu=zoom_menu,
-        )
-
-        view_menu.add_checkbutton(
-            label="Status bar",
-            offvalue=False,
-            onvalue=True,
-            variable=self.textbox.status_bar_enabled,
-            command=self.textbox.change_status_bar_visibility,
-        )
-        menu.add_cascade(label="View", menu=view_menu)
+        self.menu = MenuBar(self)
+        self.configure(menu=self.menu)
 
     def create_textbox(self):
         self.textbox = TextBox(self)
