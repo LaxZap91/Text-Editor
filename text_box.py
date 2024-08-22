@@ -84,15 +84,13 @@ class TextBox(ttk.Frame):
 
     def change_hscroll_bar_visibility(self):
         if self.hscroll_needed:
-            self.hscroll_bar.pack(anchor="nw", fill="x", side="bottom")
+            self.hscroll_bar.pack(anchor="nw", fill="x", side="top")
         else:
             self.hscroll_bar.pack_forget()
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
-            self.status_bar.pack_forget()
-
-            self.status_bar.pack(fill="x", side="bottom")
+            self.status_bar.pack(anchor="nw", fill="x", side="bottom")
         else:
             self.status_bar.pack_forget()
 
