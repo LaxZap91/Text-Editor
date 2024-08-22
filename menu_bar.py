@@ -16,7 +16,9 @@ class MenuBar(ttk.Menu):
             label="Save As", command=master.save_as_command, accelerator="Ctrl+Shift+O"
         )
         file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=lambda: master.quit())
+        file_menu.add_command(label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,")
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=master.destroy)
         self.add_cascade(label="File", menu=file_menu)
 
         view_menu = ttk.Menu(self, tearoff=False)
