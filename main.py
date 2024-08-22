@@ -17,19 +17,24 @@ class TextEditorApp(ttk.Window):
             iconphoto="icon/icon.png",
         )
 
-        self.create_textbox()
-        self.create_menu_bar()
-        self.create_keybinds()
+        self.create_editor()
 
         self.update_clock()
 
-    def create_menu_bar(self):
-        self.menu = MenuBar(self)
-        self.configure(menu=self.menu)
-
-    def create_textbox(self):
+    def create_editor(self):
         self.textbox = TextBox(self)
+        self.menu = MenuBar(self)
+        self.place_editor()
+
+    def place_editor(self):
         self.textbox.pack(fill="both", expand=True)
+        self.configure(menu=self.menu)
+        self.create_keybinds()
+
+    def remove_editor(self):
+        self.textbox.pack_forget()
+        self.configure(menu="")
+        self.remove_keybinds()
 
     def open_command(self):
         file_path = askopenfilename(
@@ -85,7 +90,19 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-z>", lambda _: self.textbox.undo_text())
         self.bind_all("<Control-Shift-Z>", lambda _: self.textbox.redo_text())
 
-        self.protocol("WM_DELETE_WINDOW", self.display_check_save)
+        self.protocol("WM_DELETE_WINDOW", self.editor_on_close)
+
+    def remove_keybinds(self):
+        self.unbind_all("<Control-o>")
+        self.unbind_all("<Control-s>")
+        self.unbind_all("<Control-Shift-S>")
+        self.unbind_all("<Control-=>")
+        self.unbind_all("<Control-minus>")
+        self.unbind_all("<Control-0>")
+        self.unbind_all("<Control-z>")
+        self.unbind_all("<Control-Shift-Z>")
+
+        self.protocol("WM_DELETE_WINDOW", self.destroy)
 
     def update_clock(self):
         self.textbox.status_bar.update_word_count()
@@ -93,7 +110,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_is_saved()
         self.after(10, self.update_clock)
 
-    def display_check_save(self):
+    def editor_on_close(self):
         if not self.textbox.is_not_modified():
             msg_box = MessageDialog(
                 "Do you want to save changes?",
