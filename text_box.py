@@ -80,7 +80,7 @@ class TextBox(ttk.Frame):
         self.line_numbers.configure(state="normal")
         self.line_numbers.insert("end", "1")
         self.line_numbers.configure(state="disabled")
-        self.line_numbers.tag_add("line", 1.0, "end")
+        self.line_numbers.tag_add("line", "1.0", "end")
         self.line_numbers.tag_configure("line", justify="right")
 
         self.vscroll_bar.configure(command=self.vscroll)
@@ -197,10 +197,10 @@ class TextBox(ttk.Frame):
             self.line_numbers.pack_forget()
 
     def get_text(self):
-        return self.text.get(1.0, "end")
+        return self.text.get("1.0", "end")
 
     def clear_text(self):
-        self.text.delete(1.0, "end")
+        self.text.delete("1.0", "end")
 
     def is_not_modified(self):
         return self.saved_state == self.get_text()
@@ -227,11 +227,11 @@ class TextBox(ttk.Frame):
         self.line_numbers.configure(
             state="normal", width=self.get_line_number_digits() + 1
         )
-        self.line_numbers.delete(1.0, "end")
+        self.line_numbers.delete("1.0", "end")
         self.line_numbers.insert(
             "end", "\n".join(map(str, range(1, self.get_line_number() + 1)))
         )
-        self.line_numbers.tag_add("line", 1.0, "end")
+        self.line_numbers.tag_add("line", "1.0", "end")
         self.line_numbers.configure(state="disabled")
 
     def update_line_numbers(self):
@@ -254,6 +254,6 @@ class TextBox(ttk.Frame):
         elif difference < 0:
             self.line_numbers.delete(float(new_line_numbers + 1), "end")
 
-        self.line_numbers.tag_add("line", 1.0, "end")
+        self.line_numbers.tag_add("line", "1.0", "end")
         self.line_numbers.configure(state="disabled")
         self.current_line_numbers = self.get_line_number()
