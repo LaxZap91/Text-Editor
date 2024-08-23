@@ -63,4 +63,11 @@ class MenuBar(ttk.Menu):
             variable=master.textbox.status_bar.file_path_enabled,
             command=master.textbox.status_bar.change_file_path_visiblilty,
         )
+        view_menu.add_checkbutton(
+            label="Line numbers",
+            offvalue=False,
+            onvalue=True,
+            variable=master.textbox.line_numbers_enabled,
+            command=master.textbox.change_line_numbers_visibility,
+        )
         self.add_cascade(label="View", menu=view_menu)

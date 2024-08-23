@@ -11,6 +11,11 @@ class TextEditorApp(ttk.Window):
     def __init__(self):
 
         self.file_path = None
+        self.allowed_file_types = [
+            ("Text documents (*.txt)", "*.txt"),
+            ("Markdown documents (*.md)", "*.md"),
+            ("All files (*)", "*"),
+        ]
 
         super().__init__(
             "New File - Text Editor",
@@ -52,11 +57,7 @@ class TextEditorApp(ttk.Window):
     def open_command(self):
         file_path = askopenfilename(
             defaultextension=".txt",
-            filetypes=[
-                ("Text documents (*.txt)", "*.txt"),
-                ("Markdown documents (*.md)", "*.md"),
-                ("All files (*)", "*"),
-            ],
+            filetypes=self.allowed_file_types,
         )
         if file_path.strip() == "":
             return
@@ -68,19 +69,12 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_word_count()
         self.textbox.saved_state = self.textbox.get_text()
         self.textbox.status_bar.update_file_path()
-        self.title(
-            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
-        )
+        self.set_title()
+        self.textbox.text.edit_reset()
 
     def save_command(self):
         if self.file_path is not None:
-            with open(self.file_path, "w") as file:
-                file.write(self.textbox.get_text())
-            self.textbox.saved_state = self.textbox.get_text()
-            self.textbox.status_bar.update_file_path()
-            self.title(
-                f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
-            )
+            self.save()
         else:
             self.save_as_command()
 
@@ -89,22 +83,20 @@ class TextEditorApp(ttk.Window):
             title="Save as",
             confirmoverwrite=True,
             defaultextension=".txt",
-            filetypes=[
-                ("Text documents (*.txt)", "*.txt"),
-                ("Markdown documents (*.md)", "*.md"),
-                ("All files (*)", "*"),
-            ],
+            filetypes=self.allowed_file_types,
             initialfile=self.textbox.get_text().split("\n")[0],
         )
         if file_path.strip() == "":
             return
-        with open(file_path, mode="w") as file:
+        self.file_path = file_path
+        self.save()
+
+    def save(self):
+        with open(self.file_path, mode="w") as file:
             file.write(self.textbox.get_text())
         self.textbox.saved_state = self.textbox.get_text()
         self.textbox.status_bar.update_file_path()
-        self.title(
-            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
-        )
+        self.set_title()
 
     def create_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
@@ -154,6 +146,11 @@ class TextEditorApp(ttk.Window):
                 self.save_command()
             elif result == "Cancel":
                 return "Cancel"
+
+    def set_title(self):
+        self.title(
+            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+        )
 
 
 if __name__ == "__main__":

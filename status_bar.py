@@ -13,19 +13,22 @@ class StatusBar(ttk.Frame):
         self.is_saved = ttk.StringVar(value="Saved: False")
         self.path_to_file = ttk.StringVar(value="Path: None")
         
-        self.file_path_enabled = ttk.BooleanVar(value=True)
-
-        self.word_count_label = ttk.Label(self, textvariable=self.word_count)
-        self.word_count_label.grid(row=0, column=0, sticky='nsew')
-
-        self.zoom_label = ttk.Label(self, textvariable=self.zoom_level)
-        self.zoom_label.grid(row=0, column=1, sticky='nsew')
-
-        self.is_saved_label = ttk.Label(self, textvariable=self.is_saved)
-        self.is_saved_label.grid(row=0, column=2, sticky='nsew')
+        self.file_path_enabled = ttk.BooleanVar(value=False)
         
+        self.create_wigits()
+        self.pack_wigits()
+
+    def create_wigits(self):
+        self.word_count_label = ttk.Label(self, textvariable=self.word_count)
+        self.zoom_label = ttk.Label(self, textvariable=self.zoom_level)
+        self.is_saved_label = ttk.Label(self, textvariable=self.is_saved)
         self.file_path_label = ttk.Label(self, textvariable=self.path_to_file)
-        self.file_path_label.grid(row=0, column=3, sticky='nsew')
+    
+    def pack_wigits(self):
+        self.word_count_label.grid(row=0, column=0, sticky="nsew")
+        self.zoom_label.grid(row=0, column=1, sticky='nsew')
+        self.is_saved_label.grid(row=0, column=2, sticky='nsew')
+        # self.file_path_label.grid(row=0, column=3, sticky='nsew')
 
     def update_word_count(self):
         text = self.master.get_text()
