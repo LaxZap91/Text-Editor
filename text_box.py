@@ -159,9 +159,11 @@ class TextBox(ttk.Frame):
                     before=self.text,
                     padx=0,
                 )
-
+            if self.line_numbers_enabled.get():
+                self.line_numbers.pack_configure(pady=(0, 11))
         else:
             self.hscroll_bar.pack_forget()
+            self.line_numbers.pack_configure(pady=0)
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
