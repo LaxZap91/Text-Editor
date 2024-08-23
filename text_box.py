@@ -11,6 +11,7 @@ class TextBox(ttk.Frame):
         self.vscroll_needed = False
         self.hscroll_needed = False
         self.saved_state = "\n"
+        self.current_line_numbers = 1
 
         super().__init__(master)
 
@@ -139,7 +140,7 @@ class TextBox(ttk.Frame):
                     side="right",
                     # after=self.line_numbers,
                     before=self.text,
-                    pady=0
+                    pady=0,
                 )
         else:
             self.vscroll_bar.pack_forget()
@@ -163,7 +164,7 @@ class TextBox(ttk.Frame):
                     side="bottom",
                     # after=self.vscroll_bar,
                     before=self.text,
-                    padx=0
+                    padx=0,
                 )
 
         else:
@@ -227,3 +228,22 @@ class TextBox(ttk.Frame):
         )
         self.line_numbers.tag_add("line", 1.0, "end")
         self.line_numbers.configure(state="disabled")
+
+    def update_line_numbers(self):
+        self.line_numbers.configure(
+            state="normal", width=self.get_line_number_digits() + 1
+        )
+
+        new_line_numbers = self.get_line_number()
+        difference = new_line_numbers - self.current_line_numbers
+        if difference > 0:
+            self.line_numbers.insert(
+                "end",
+                f"\n{"\n".join(map(str, range(self.current_line_numbers, new_line_numbers)))}",
+            )
+        if difference < 0:
+            self.line_numbers.delete(float(new_line_numbers + 1), "end")
+
+        self.line_numbers.tag_add("line", 1.0, "end")
+        self.line_numbers.configure(state="disabled")
+        self.current_line_numbers = self.get_line_number()
