@@ -43,7 +43,7 @@ class TextBox(ttk.Frame):
             self.text_box_frame_2,
             wrap="none",
             font=self.font,
-            width=3,
+            width=2,
             height=1,
             state="disabled",
         )
@@ -62,11 +62,11 @@ class TextBox(ttk.Frame):
         self.status_bar.pack(fill="x", side="bottom")
 
     def configure_wigits(self):
-        self.line_numbers.tag_add('line', 1.0, 'end')
-        self.line_numbers.tag_configure("line", justify="right")
         self.line_numbers.configure(state="normal")
         self.line_numbers.insert("end", "1")
         self.line_numbers.configure(state="disabled")
+        self.line_numbers.tag_add('line', 1.0, 'end')
+        self.line_numbers.tag_configure("line", justify="right")
 
         self.vscroll_bar.configure(command=self.vscroll)
         self.text.configure(yscrollcommand=self.update_vscroll)
