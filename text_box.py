@@ -15,8 +15,8 @@ class TextBox(ttk.Frame):
         super().__init__(master)
 
         self.status_bar_enabled = ttk.BooleanVar(value=True)
-        self.line_numbers_enabled = ttk.BooleanVar(value=True)
 
+        self.line_numbers_enabled = ttk.BooleanVar(value=True)
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
 
