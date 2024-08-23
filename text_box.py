@@ -15,8 +15,8 @@ class TextBox(ttk.Frame):
         super().__init__(master)
 
         self.status_bar_enabled = ttk.BooleanVar(value=True)
-
         self.line_numbers_enabled = ttk.BooleanVar(value=True)
+
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
 
@@ -27,11 +27,8 @@ class TextBox(ttk.Frame):
         self.configure_wigits()
 
     def create_wigits(self):
-        self.text_box_frame_2 = ttk.Frame(self)
-        self.text_box_frame_1 = ttk.Frame(self.text_box_frame_2)
-
         self.text = ttk.Text(
-            self.text_box_frame_1,
+            self,
             undo=True,
             maxundo=-1,
             wrap="none",
@@ -40,32 +37,52 @@ class TextBox(ttk.Frame):
             height=1,
         )
         self.line_numbers = ttk.Text(
-            self.text_box_frame_2,
+            self,
             wrap="none",
             font=self.font,
             width=2,
             height=1,
             state="disabled",
         )
-        self.vscroll_bar = ttk.Scrollbar(self.text_box_frame_1)
-        self.hscroll_bar = ttk.Scrollbar(self.text_box_frame_2, orient="horizontal")
+        self.vscroll_bar = ttk.Scrollbar(self)
+        self.hscroll_bar = ttk.Scrollbar(self, orient="horizontal")
 
         self.status_bar = StatusBar(self, self.master)
 
     def pack_wigits(self):
-        self.text.pack(anchor="ne", fill="both", expand=True, side="left")
-        self.line_numbers.pack(anchor="nw", fill="both", side="left", before=self.text)
-        self.vscroll_bar.pack(anchor="ne", fill="y", side="right")
-        self.hscroll_bar.pack(anchor="nw", fill="x", side="bottom")
-        self.text_box_frame_1.pack(fill="both", side="top", expand=True)
-        self.text_box_frame_2.pack(fill="both", side="top", expand=True)
-        self.status_bar.pack(fill="x", side="bottom")
+        self.status_bar.pack(
+            anchor="sw", fill="x", side="bottom"#, before=self.line_numbers
+        )
+        self.line_numbers.pack(
+            anchor="nw",
+            fill="both",
+            side="left",
+            after=self.status_bar,
+            #before=self.vscroll_bar,
+        )
+        self.vscroll_bar.pack(
+            anchor="ne",
+            fill="y",
+            side="right",
+            after=self.line_numbers,
+            #before=self.hscroll_bar,
+        )
+        self.hscroll_bar.pack(
+            anchor="sw",
+            fill="x",
+            side="bottom",
+            after=self.vscroll_bar,
+            #before=self.text,
+        )
+        self.text.pack(
+            anchor="ne", fill="both", expand=True, side="top", after=self.hscroll_bar
+        )
 
     def configure_wigits(self):
         self.line_numbers.configure(state="normal")
         self.line_numbers.insert("end", "1")
         self.line_numbers.configure(state="disabled")
-        self.line_numbers.tag_add('line', 1.0, 'end')
+        self.line_numbers.tag_add("line", 1.0, "end")
         self.line_numbers.tag_configure("line", justify="right")
 
         self.vscroll_bar.configure(command=self.vscroll)
@@ -105,26 +122,45 @@ class TextBox(ttk.Frame):
 
     def change_vscroll_bar_visibility(self):
         if self.vscroll_needed:
-            self.vscroll_bar.pack(anchor="ne", fill="y", side="right")
+            self.vscroll_bar.pack(
+                anchor="ne",
+                fill="y",
+                side="right",
+                # after=self.line_numbers,
+                before=self.text,
+            )
         else:
             self.vscroll_bar.pack_forget()
 
     def change_hscroll_bar_visibility(self):
         if self.hscroll_needed:
-            self.hscroll_bar.pack(anchor="nw", fill="x", side="top")
+            self.hscroll_bar.pack(
+                anchor="sw",
+                fill="x",
+                side="bottom",
+                # after=self.vscroll_bar,
+                before=self.text,
+            )
         else:
             self.hscroll_bar.pack_forget()
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
-            self.status_bar.pack(anchor="nw", fill="x", side="bottom")
+            self.status_bar.pack(
+                anchor="sw", fill="x", side="bottom", before=self.hscroll_bar
+            )
+            self.line_numbers.pack_configure(after=self.status_bar)
         else:
             self.status_bar.pack_forget()
 
     def change_line_numbers_visibility(self):
         if self.line_numbers_enabled.get():
             self.line_numbers.pack(
-                anchor="nw", fill="both", side="left", before=self.text
+                anchor="nw",
+                fill="both",
+                side="left",
+                after=self.status_bar,
+                # before=self.vscroll_bar,
             )
         else:
             self.line_numbers.pack_forget()
@@ -164,5 +200,5 @@ class TextBox(ttk.Frame):
         self.line_numbers.insert(
             "end", "\n".join(map(str, range(1, self.get_line_number() + 1)))
         )
-        self.line_numbers.tag_add('line', 1.0, 'end')
+        self.line_numbers.tag_add("line", 1.0, "end")
         self.line_numbers.configure(state="disabled")
