@@ -236,12 +236,17 @@ class TextBox(ttk.Frame):
 
         new_line_numbers = self.get_line_number()
         difference = new_line_numbers - self.current_line_numbers
-        if difference > 0:
+        if difference == 1:
+            self.line_numbers.insert(
+                "end",
+                f"\n{new_line_numbers}",
+            )
+        elif difference > 1:
             self.line_numbers.insert(
                 "end",
                 f"\n{"\n".join(map(str, range(self.current_line_numbers, new_line_numbers)))}",
             )
-        if difference < 0:
+        elif difference < 0:
             self.line_numbers.delete(float(new_line_numbers + 1), "end")
 
         self.line_numbers.tag_add("line", 1.0, "end")
