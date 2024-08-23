@@ -19,8 +19,8 @@ class TextEditorApp(ttk.Window):
 
         super().__init__(
             "New File - Text Editor",
-            size=(500, 500),
-            minsize=(250, 100),
+            size=(750, 600),
+            minsize=(300, 150),
         )
 
         self.create_plain_text_editor()
