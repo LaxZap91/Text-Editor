@@ -122,33 +122,52 @@ class TextBox(ttk.Frame):
 
     def change_vscroll_bar_visibility(self):
         if self.vscroll_needed:
-            self.vscroll_bar.pack(
-                anchor="ne",
-                fill="y",
-                side="right",
-                # after=self.line_numbers,
-                before=self.text,
-            )
             if self.hscroll_needed:
-                print("pack box")
+                self.vscroll_bar.pack(
+                    anchor="ne",
+                    fill="y",
+                    side="right",
+                    # after=self.line_numbers,
+                    before=self.text,
+                    pady=0,
+                )
+                self.hscroll_bar.pack_configure(padx=(0, 11))
+            else:
+                self.vscroll_bar.pack(
+                    anchor="ne",
+                    fill="y",
+                    side="right",
+                    # after=self.line_numbers,
+                    before=self.text,
+                    pady=0
+                )
         else:
             self.vscroll_bar.pack_forget()
-            print("pack_forget box")
 
     def change_hscroll_bar_visibility(self):
         if self.hscroll_needed:
-            self.hscroll_bar.pack(
-                anchor="sw",
-                fill="x",
-                side="bottom",
-                # after=self.vscroll_bar,
-                before=self.text,
-            )
             if self.vscroll_needed:
-                print("pack box")
+                self.hscroll_bar.pack(
+                    anchor="sw",
+                    fill="x",
+                    side="bottom",
+                    # after=self.vscroll_bar,
+                    before=self.text,
+                    padx=0,
+                )
+                self.vscroll_bar.pack_configure(pady=(0, 11))
+            else:
+                self.hscroll_bar.pack(
+                    anchor="sw",
+                    fill="x",
+                    side="bottom",
+                    # after=self.vscroll_bar,
+                    before=self.text,
+                    padx=0
+                )
+
         else:
             self.hscroll_bar.pack_forget()
-            print("pack_forget box")
 
     def change_status_bar_visibility(self):
         if self.status_bar_enabled.get():
