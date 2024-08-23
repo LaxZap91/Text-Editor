@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from tkinter.font import Font
 from status_bar import StatusBar
+from math import log10
 
 
 class TextBox(ttk.Frame):
@@ -18,7 +19,6 @@ class TextBox(ttk.Frame):
 
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
-
 
         self.font = Font(family="Consolas", size=11)
 
@@ -62,7 +62,11 @@ class TextBox(ttk.Frame):
         self.status_bar.pack(fill="x", side="bottom")
 
     def configure_wigits(self):
+        self.line_numbers.tag_add('line', 1.0, 'end')
         self.line_numbers.tag_configure("line", justify="right")
+        self.line_numbers.configure(state="normal")
+        self.line_numbers.insert("end", "1")
+        self.line_numbers.configure(state="disabled")
 
         self.vscroll_bar.configure(command=self.vscroll)
         self.text.configure(yscrollcommand=self.update_vscroll)
@@ -146,5 +150,19 @@ class TextBox(ttk.Frame):
         except Exception:
             pass
 
-    def get_lines(self):
-        return int(self.text.index("end-1c"))
+    def get_line_number(self):
+        return int(self.text.index("end-1c").split(".")[0])
+
+    def get_line_number_digits(self):
+        return int(log10(self.get_line_number())) + 1
+
+    def set_line_number(self):
+        self.line_numbers.configure(
+            state="normal", width=self.get_line_number_digits() + 1
+        )
+        self.line_numbers.delete(1.0, "end")
+        self.line_numbers.insert(
+            "end", "\n".join(map(str, range(1, self.get_line_number() + 1)))
+        )
+        self.line_numbers.tag_add('line', 1.0, 'end')
+        self.line_numbers.configure(state="disabled")
