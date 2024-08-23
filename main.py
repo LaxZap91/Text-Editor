@@ -21,7 +21,6 @@ class TextEditorApp(ttk.Window):
             "New File - Text Editor",
             size=(500, 500),
             minsize=(250, 100),
-            iconphoto="icon/icon.png",
         )
 
         self.create_plain_text_editor()
@@ -55,6 +54,8 @@ class TextEditorApp(ttk.Window):
         self.title("New File - Text Editor")
 
     def open_command(self):
+        if self.save_prompt() == "Cancel":
+            return
         file_path = askopenfilename(
             defaultextension=".txt",
             filetypes=self.allowed_file_types,
