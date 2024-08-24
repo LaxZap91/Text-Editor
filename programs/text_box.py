@@ -96,9 +96,6 @@ class TextBox(ttk.Frame):
         self.text.bind_class(
             "post-text", "<KeyRelease>", lambda _: self.update_line_numbers(), add="+"
         )
-        self.text.bind_class(
-            "post-text", "<Control-v>", lambda _: self.update_line_numbers(), add="+"
-        )
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
