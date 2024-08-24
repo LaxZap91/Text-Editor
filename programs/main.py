@@ -96,7 +96,7 @@ class TextEditorApp(ttk.Window):
 
     def save(self):
         with open(self.file_path, mode="w") as file:
-            file.write(self.textbox.get_text())
+            file.write(self.textbox.get_text()[:-1])
         self.textbox.saved_state = self.textbox.get_text()
         self.textbox.status_bar.update_file_path()
         self.set_title()
