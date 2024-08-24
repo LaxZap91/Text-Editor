@@ -29,7 +29,7 @@ class MenuBar(ttk.Menu):
         edit_menu = ttk.Menu(self, tearoff=False)
 
         edit_menu.add_checkbutton(
-            label="Spaces",
+            label="Space Indentation",
             offvalue=False,
             onvalue=True,
             variable=master.textbox.no_tabs,
