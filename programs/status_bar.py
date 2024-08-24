@@ -11,7 +11,7 @@ class StatusBar(ttk.Frame):
         self.word_count = ttk.StringVar(value="0 characters")
         self.zoom_level = ttk.StringVar(value="100%")
         self.is_saved = ttk.StringVar(value="Saved: False")
-        self.path_to_file = ttk.StringVar(value='Path: None')
+        self.path_to_file = ttk.StringVar(value="Path: None")
 
         self.file_path_enabled = ttk.BooleanVar(value=False)
 
@@ -27,7 +27,7 @@ class StatusBar(ttk.Frame):
     def pack_wigits(self):
         self.word_count_label.grid(row=0, column=0, sticky="nsew")
         self.zoom_label.grid(row=0, column=1, sticky="nsew")
-        self.is_saved_label.grid(row=0, column=2, sticky='nsew')
+        self.is_saved_label.grid(row=0, column=2, sticky="nsew")
         # self.file_path_label.grid(row=0, column=3, sticky='nsew')
 
     def update_word_count(self):
