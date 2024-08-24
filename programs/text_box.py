@@ -25,8 +25,8 @@ class TextBox(ttk.Frame):
         self.font = Font(family="Consolas", size=11)
 
         self.create_wigits()
-        self.pack_wigits()
         self.configure_wigits()
+        self.pack_wigits()
 
     def create_wigits(self):
         self.text = ttk.Text(
@@ -88,6 +88,17 @@ class TextBox(ttk.Frame):
 
         self.hscroll_bar.configure(command=self.hscroll)
         self.text.configure(xscrollcommand=self.update_hscroll)
+
+        self.text.bindtags((".!textbox.!text", "Text", "post-text", ".", "all"))
+        self.text.bind_class(
+            "post-text", "<KeyPress>", lambda _: self.update_line_numbers(), add="+"
+        )
+        self.text.bind_class(
+            "post-text", "<KeyRelease>", lambda _: self.update_line_numbers(), add="+"
+        )
+        self.text.bind_class(
+            "post-text", "<Control-v>", lambda _: self.update_line_numbers(), add="+"
+        )
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
