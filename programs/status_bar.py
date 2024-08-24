@@ -28,7 +28,6 @@ class StatusBar(ttk.Frame):
         self.word_count_label.grid(row=0, column=0, sticky="nsew")
         self.zoom_label.grid(row=0, column=1, sticky="nsew")
         self.is_saved_label.grid(row=0, column=2, sticky="nsew")
-        # self.file_path_label.grid(row=0, column=3, sticky='nsew')
 
     def update_word_count(self):
         text = self.master.get_text()
