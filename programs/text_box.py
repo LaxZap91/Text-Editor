@@ -52,9 +52,7 @@ class TextBox(ttk.Frame):
         self.status_bar = StatusBar(self, self.master)
 
     def pack_wigits(self):
-        self.status_bar.pack(
-            anchor="sw", fill="x", side="bottom"
-        )
+        self.status_bar.pack(anchor="sw", fill="x", side="bottom")
         self.line_numbers.pack(
             anchor="nw",
             fill="both",
@@ -90,7 +88,6 @@ class TextBox(ttk.Frame):
 
         self.hscroll_bar.configure(command=self.hscroll)
         self.text.configure(xscrollcommand=self.update_hscroll)
-        
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
@@ -262,15 +259,13 @@ class TextBox(ttk.Frame):
         self.line_numbers.tag_add("line", "1.0", "end")
         self.line_numbers.configure(state="disabled")
         self.current_line_numbers = self.get_line_number()
-    
+
     def change_tab_to_space(self):
         if self.no_tabs.get():
-            self.text.bind('<Tab>', lambda _: self.tab_to_space())
+            self.text.bind("<Tab>", lambda _: self.tab_to_space())
         else:
-            self.text.unbind('<Tab>')
-            
-    
-    
+            self.text.unbind("<Tab>")
+
     def tab_to_space(self):
-        self.text.insert('insert', '    ')
-        return 'break'
+        self.text.insert("insert", "    ")
+        return "break"
