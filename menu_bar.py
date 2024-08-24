@@ -26,6 +26,17 @@ class MenuBar(ttk.Menu):
         file_menu.add_command(label="Exit", command=master.destroy)
         self.add_cascade(label="File", menu=file_menu)
 
+        edit_menu = ttk.Menu(self, tearoff=False)
+
+        edit_menu.add_checkbutton(
+            label="Spaces",
+            offvalue=False,
+            onvalue=True,
+            variable=master.textbox.no_tabs,
+            command=master.textbox.change_tab_to_space,
+        )
+        self.add_cascade(label="Edit", menu=edit_menu)
+
         view_menu = ttk.Menu(self, tearoff=False)
 
         zoom_menu = ttk.Menu(view_menu, tearoff=False)
