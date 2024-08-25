@@ -288,5 +288,5 @@ class TextBox(ttk.Frame):
             self.text.unbind("<Tab>")
 
     def tab_to_space(self):
-        self.text.insert("insert", "    ")
+        self.text.insert("insert", " " * 4)
         return "break"
