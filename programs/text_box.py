@@ -37,6 +37,7 @@ class TextBox(ttk.Frame):
             font=self.font,
             width=1,
             height=1,
+            autoseparators=False,
         )
         self.line_numbers = ttk.Text(
             self,
@@ -90,7 +91,15 @@ class TextBox(ttk.Frame):
         self.text.configure(xscrollcommand=self.update_hscroll)
 
         self.text.bindtags(
-            (".!textbox.!text", "Text", ".", "all", "line_number_updates")
+            (
+                "edit_seperator_pre",
+                ".!textbox.!text",
+                "Text",
+                "edit_seperator_post",
+                ".",
+                "all",
+                "line_number_updates",
+            )
         )
         tuple(
             map(
@@ -102,6 +111,42 @@ class TextBox(ttk.Frame):
                 (
                     "<Return>",
                     "<BackSpace>",
+                    "<Control-v>",
+                    "<Control-x>",
+                    "<Control-z>",
+                    "<Control-Shift-Z>",
+                ),
+            )
+        )
+        tuple(
+            map(
+                lambda sequence: self.text.bind_class(
+                    "edit_seperator_pre",
+                    sequence,
+                    lambda _: self.text.edit_separator(),
+                ),
+                (
+                    "<Return>",
+                    "<BackSpace>",
+                    "<space>",
+                    "<Control-v>",
+                    "<Control-x>",
+                    "<Control-z>",
+                    "<Control-Shift-Z>",
+                ),
+            )
+        )
+        tuple(
+            map(
+                lambda sequence: self.text.bind_class(
+                    "edit_seperator_post",
+                    sequence,
+                    lambda _: self.text.edit_separator(),
+                ),
+                (
+                    "<Return>",
+                    "<BackSpace>",
+                    "<space>",
                     "<Control-v>",
                     "<Control-x>",
                     "<Control-z>",
