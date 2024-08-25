@@ -89,12 +89,33 @@ class TextBox(ttk.Frame):
         self.hscroll_bar.configure(command=self.hscroll)
         self.text.configure(xscrollcommand=self.update_hscroll)
 
-        self.text.bindtags((".!textbox.!text", "Text", "post-text", ".", "all"))
-        self.text.bind_class(
-            "post-text", "<KeyPress>", lambda _: self.update_line_numbers(), add="+"
+        self.text.bindtags(
+            (
+                ".!textbox.!text",
+                "Text",
+                "line_number_updates",
+                ".",
+                "all",
+            )
         )
-        self.text.bind_class(
-            "post-text", "<KeyRelease>", lambda _: self.update_line_numbers(), add="+"
+        tuple(
+            map(
+                lambda sequence: self.text.bind_class(
+                    "line_number_updates",
+                    sequence,
+                    lambda _: self.update_line_numbers(),
+                ),
+                (
+                    "<Return>",
+                    "<BackSpace>",
+                    "<Control-v>",
+                    "<Control-x>",
+                    "<Control-z>",
+                    "<Control-Shift-Z>",
+                    "<Up>",
+                    "<Down>",
+                ),
+            )
         )
 
     def increment_zoom(self, size):
@@ -233,7 +254,7 @@ class TextBox(ttk.Frame):
     def get_line_number_digits(self):
         return int(log10(self.get_line_number())) + 1
 
-    def set_line_number(self):
+    def set_line_numbers(self):
         self.line_numbers.configure(
             state="normal", width=self.get_line_number_digits() + 1
         )

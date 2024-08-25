@@ -52,7 +52,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.saved_state = "\n"
         self.textbox.status_bar.update_file_path()
         self.title("New File - Text Editor")
-        self.textbox.set_line_number()
+        self.textbox.set_line_numbers()
 
     def open_command(self):
         if self.save_prompt() == "Cancel":
@@ -73,7 +73,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_file_path()
         self.set_title()
         self.textbox.text.edit_reset()
-        self.textbox.set_line_number()
+        self.textbox.set_line_numbers()
 
     def save_command(self):
         if self.file_path is not None:
@@ -129,7 +129,6 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_word_count()
         self.textbox.status_bar.update_zoom_percent()
         self.textbox.status_bar.update_is_saved()
-        # self.textbox.update_line_numbers()
         self.after(10, self.update_clock)
 
     def plain_text_editor_on_close(self):

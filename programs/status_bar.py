@@ -1,4 +1,5 @@
 import ttkbootstrap as ttk
+from bordered_label import BorderedLabel
 
 
 class StatusBar(ttk.Frame):
@@ -19,10 +20,30 @@ class StatusBar(ttk.Frame):
         self.pack_wigits()
 
     def create_wigits(self):
-        self.word_count_label = ttk.Label(self, textvariable=self.word_count)
-        self.zoom_label = ttk.Label(self, textvariable=self.zoom_level)
-        self.is_saved_label = ttk.Label(self, textvariable=self.is_saved)
-        self.file_path_label = ttk.Label(self, textvariable=self.path_to_file)
+        self.word_count_label = BorderedLabel(
+            self,
+            30,
+            textvariable=self.word_count,
+            state="disabled",
+        )
+        self.zoom_label = BorderedLabel(
+            self,
+            30,
+            textvariable=self.zoom_level,
+            state="disabled",
+        )
+        self.is_saved_label = BorderedLabel(
+            self,
+            30,
+            textvariable=self.is_saved,
+            state="disabled",
+        )
+        self.file_path_label = BorderedLabel(
+            self,
+            30,
+            textvariable=self.path_to_file,
+            state="disabled",
+        )
 
     def pack_wigits(self):
         self.word_count_label.grid(row=0, column=0, sticky="nsew")
@@ -34,6 +55,7 @@ class StatusBar(ttk.Frame):
         self.word_count.set(
             f'{len(text)-sum(map(text.count, ('\n', '\t')))} characters'
         )
+        self.word_count_label.update_width()
 
     def update_zoom_percent(self):
         self.zoom_level.set(f"{(self.master.font.actual("size") - 11) * 10 + 100}%")
@@ -42,9 +64,11 @@ class StatusBar(ttk.Frame):
         self.is_saved.set(
             f"Saved: {'True' if self.master.is_not_modified() else 'False'}"
         )
+        self.is_saved_label.update_width()
 
     def update_file_path(self):
         self.path_to_file.set(f"Path: {self.window.file_path}")
+        self.file_path_label.update_width()
 
     def change_file_path_visiblilty(self):
         if self.file_path_enabled.get():
