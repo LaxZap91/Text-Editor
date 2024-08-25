@@ -5,38 +5,11 @@ class MenuBar(ttk.Menu):
     def __init__(self, master):
         super().__init__(master, tearoff=False)
 
-        file_menu = ttk.Menu(self, tearoff=False)
-        file_menu.add_command(
-            label="New file", command=master.new_file_command, accelerator="Ctrl+N"
-        )
-        file_menu.add_command(
-            label="Open", command=master.open_command, accelerator="Ctrl+O"
-        )
-        file_menu.add_command(
-            label="Save", command=master.save_command, accelerator="Ctrl+S"
-        )
-        file_menu.add_command(
-            label="Save as", command=master.save_as_command, accelerator="Ctrl+Shift+O"
-        )
-        file_menu.add_separator()
-        file_menu.add_command(
-            label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,"
-        )
-        file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=master.destroy)
-        self.add_cascade(label="File", menu=file_menu)
+        self.create_file_menu(master)
+        self.create_edit_menu(master)
+        self.create_view_menu(master)
 
-        edit_menu = ttk.Menu(self, tearoff=False)
-
-        edit_menu.add_checkbutton(
-            label="Space Indentation",
-            offvalue=False,
-            onvalue=True,
-            variable=master.textbox.no_tabs,
-            command=master.textbox.change_tab_to_space,
-        )
-        self.add_cascade(label="Edit", menu=edit_menu)
-
+    def create_view_menu(self, master):
         view_menu = ttk.Menu(self, tearoff=False)
 
         zoom_menu = ttk.Menu(view_menu, tearoff=False)
@@ -82,3 +55,37 @@ class MenuBar(ttk.Menu):
             command=master.textbox.change_line_numbers_visibility,
         )
         self.add_cascade(label="View", menu=view_menu)
+
+    def create_edit_menu(self, master):
+        edit_menu = ttk.Menu(self, tearoff=False)
+
+        edit_menu.add_checkbutton(
+            label="Space Indentation",
+            offvalue=False,
+            onvalue=True,
+            variable=master.textbox.no_tabs,
+            command=master.textbox.change_tab_to_space,
+        )
+        self.add_cascade(label="Edit", menu=edit_menu)
+
+    def create_file_menu(self, master):
+        file_menu = ttk.Menu(self, tearoff=False)
+        file_menu.add_command(
+            label="New file", command=master.new_file_command, accelerator="Ctrl+N"
+        )
+        file_menu.add_command(
+            label="Open", command=master.open_command, accelerator="Ctrl+O"
+        )
+        file_menu.add_command(
+            label="Save", command=master.save_command, accelerator="Ctrl+S"
+        )
+        file_menu.add_command(
+            label="Save as", command=master.save_as_command, accelerator="Ctrl+Shift+O"
+        )
+        file_menu.add_separator()
+        file_menu.add_command(
+            label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,"
+        )
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=master.destroy)
+        self.add_cascade(label="File", menu=file_menu)
