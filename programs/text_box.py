@@ -90,13 +90,7 @@ class TextBox(ttk.Frame):
         self.text.configure(xscrollcommand=self.update_hscroll)
 
         self.text.bindtags(
-            (
-                ".!textbox.!text",
-                "Text",
-                "line_number_updates",
-                ".",
-                "all",
-            )
+            (".!textbox.!text", "Text", ".", "all", "line_number_updates")
         )
         tuple(
             map(
@@ -112,8 +106,6 @@ class TextBox(ttk.Frame):
                     "<Control-x>",
                     "<Control-z>",
                     "<Control-Shift-Z>",
-                    "<Up>",
-                    "<Down>",
                 ),
             )
         )
@@ -280,7 +272,7 @@ class TextBox(ttk.Frame):
         elif difference > 1:
             self.line_numbers.insert(
                 "end",
-                f"\n{"\n".join(map(str, range(self.current_line_numbers, new_line_numbers)))}",
+                f"\n{"\n".join(map(str, range(self.current_line_numbers+1, new_line_numbers+1)))}",
             )
         elif difference < 0:
             self.line_numbers.delete(float(new_line_numbers + 1), "end")
