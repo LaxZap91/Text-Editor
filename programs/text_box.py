@@ -112,9 +112,11 @@ class TextBox(ttk.Frame):
 
     def increment_zoom(self, size):
         self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
+        self.status_bar.update_zoom_percent()
 
     def set_zoom(self, size):
         self.font.configure(size=max(1, min(51, int((size - 100) / 10 + 11))))
+        self.status_bar.update_zoom_percent()
 
     def vscroll(self, action, position, type=None):
         self.text.yview_moveto(position)

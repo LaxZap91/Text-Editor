@@ -127,7 +127,6 @@ class TextEditorApp(ttk.Window):
 
     def update_clock(self):
         self.textbox.status_bar.update_word_count()
-        self.textbox.status_bar.update_zoom_percent()
         self.textbox.status_bar.update_is_saved()
         self.after(10, self.update_clock)
 
