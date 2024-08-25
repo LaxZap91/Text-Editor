@@ -118,6 +118,15 @@ class TextBox(ttk.Frame):
                 ),
             )
         )
+        edit_seperator_sequences = (
+            "<Return>",
+            "<BackSpace>",
+            "<space>",
+            "<Control-v>",
+            "<Control-x>",
+            "<Control-z>",
+            "<Control-Shift-Z>",
+        )
         tuple(
             map(
                 lambda sequence: self.text.bind_class(
@@ -125,15 +134,7 @@ class TextBox(ttk.Frame):
                     sequence,
                     lambda _: self.text.edit_separator(),
                 ),
-                (
-                    "<Return>",
-                    "<BackSpace>",
-                    "<space>",
-                    "<Control-v>",
-                    "<Control-x>",
-                    "<Control-z>",
-                    "<Control-Shift-Z>",
-                ),
+                edit_seperator_sequences,
             )
         )
         tuple(
@@ -143,15 +144,7 @@ class TextBox(ttk.Frame):
                     sequence,
                     lambda _: self.text.edit_separator(),
                 ),
-                (
-                    "<Return>",
-                    "<BackSpace>",
-                    "<space>",
-                    "<Control-v>",
-                    "<Control-x>",
-                    "<Control-z>",
-                    "<Control-Shift-Z>",
-                ),
+                edit_seperator_sequences,
             )
         )
 
