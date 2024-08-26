@@ -300,6 +300,7 @@ class TextBox(ttk.Frame):
         )
         self.line_numbers.tag_add("line", "1.0", "end")
         self.line_numbers.configure(state="disabled")
+        self.current_line_numbers = self.get_line_number()
 
     def update_line_numbers(self):
         self.line_numbers.configure(
