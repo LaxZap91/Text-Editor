@@ -1,7 +1,9 @@
 from os.path import basename
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import MessageDialog
+
 from text_box import TextBox
 from menu_bar import MenuBar
 

@@ -1,7 +1,9 @@
 from tkinter import TclError
 from tkinter.font import Font
 from math import log10
+
 import ttkbootstrap as ttk
+
 from status_bar import StatusBar
 
 
