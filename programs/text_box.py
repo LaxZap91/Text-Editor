@@ -265,6 +265,10 @@ class TextBox(ttk.Frame):
     def clear_text(self):
         self.text.delete("1.0", "end")
 
+    def set_text(self, value):
+        self.clear_text()
+        self.text.insert("end", value)
+
     def is_not_modified(self):
         return self.saved_state == self.get_text()
 
@@ -330,3 +334,8 @@ class TextBox(ttk.Frame):
     def tab_to_space(self):
         self.text.insert("insert", " " * 4)
         return "break"
+
+    def revert_to_save(self):
+        if "False" in self.status_bar.is_saved.get():
+            self.set_text(self.saved_state[:-1])
+            self.update_line_numbers()
