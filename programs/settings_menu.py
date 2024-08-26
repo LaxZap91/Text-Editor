@@ -6,4 +6,4 @@ class SettingsMenu(ttk.Menu):
         self.master = master
         super().__init__(master, tearoff=False)
 
-        self.add_command(label="Back", command=self.master.goto_plain_text_editor)
+        self.add_command(label="Back", command=self.master.goto_editor)

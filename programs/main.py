@@ -5,8 +5,8 @@ import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import MessageDialog
 
 from text_box import TextBox
-from menu_bar import MenuBar
-from settings import SettingsMenu
+from editor_menu import MenuBar
+from settings_menu import SettingsMenu
 
 
 class TextEditorApp(ttk.Window):
@@ -25,42 +25,42 @@ class TextEditorApp(ttk.Window):
             minsize=(300, 150),
         )
 
-        self.create_plain_text_editor()
+        self.create_editor()
         self.create_settings()
 
         self.update_clock()
 
-    def create_plain_text_editor(self):
+    def create_editor(self):
         self.textbox = TextBox(self)
-        self.menu = MenuBar(self)
-        self.place_plain_text_editor()
+        self.editor_menu = MenuBar(self)
+        self.place_editor()
 
     def create_settings(self):
         self.settings_menu = SettingsMenu(self)
 
-    def place_plain_text_editor(self):
+    def place_editor(self):
         self.textbox.pack(fill="both", expand=True)
-        self.configure(menu=self.menu)
-        self.create_plain_text_editor_keybinds()
+        self.configure(menu=self.editor_menu)
+        self.create_editor_keybinds()
 
     def place_settings(self):
         self.configure(menu=self.settings_menu)
 
-    def remove_plain_text_editor(self):
+    def remove_editor(self):
         self.textbox.pack_forget()
         self.configure(menu="")
-        self.remove_plain_text_editor_keybinds()
+        self.remove_editor_keybinds()
 
     def remove_settings(self):
         self.configure(menu="")
 
-    def goto_plain_text_editor(self):
+    def goto_editor(self):
         self.remove_settings()
-        self.place_plain_text_editor()
+        self.place_editor()
         self.set_title()
 
     def goto_settings(self):
-        self.remove_plain_text_editor()
+        self.remove_editor()
         self.place_settings()
         self.title("Settings")
 
@@ -123,7 +123,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_file_path()
         self.set_title()
 
-    def create_plain_text_editor_keybinds(self):
+    def create_editor_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
         self.bind_all("<Control-s>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
@@ -134,9 +134,9 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-Shift-Z>", lambda _: self.textbox.redo_text())
         self.bind_all("<Control-,>", lambda _: self.goto_settings())
 
-        self.protocol("WM_DELETE_WINDOW", self.plain_text_editor_on_close)
+        self.protocol("WM_DELETE_WINDOW", self.editor_on_close)
 
-    def remove_plain_text_editor_keybinds(self):
+    def remove_editor_keybinds(self):
         self.unbind_all("<Control-o>")
         self.unbind_all("<Control-s>")
         self.unbind_all("<Control-Shift-S>")
@@ -154,7 +154,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_is_saved()
         self.after(10, self.update_clock)
 
-    def plain_text_editor_on_close(self):
+    def editor_on_close(self):
         if self.save_prompt() == "Cancel":
             return
         self.destroy()
