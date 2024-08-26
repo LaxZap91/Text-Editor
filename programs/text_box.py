@@ -1,5 +1,6 @@
 import ttkbootstrap as ttk
 from tkinter.font import Font
+from tkinter import TclError
 from status_bar import StatusBar
 from math import log10
 
@@ -275,13 +276,13 @@ class TextBox(ttk.Frame):
     def undo_text(self):
         try:
             self.text.edit_undo()
-        except Exception:
+        except TclError:
             pass
 
     def redo_text(self):
         try:
             self.text.edit_redo()
-        except Exception:
+        except TclError:
             pass
 
     def get_line_number(self):
