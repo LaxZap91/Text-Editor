@@ -90,7 +90,9 @@ class MenuBar(ttk.Menu):
         )
         file_menu.add_separator()
         file_menu.add_command(
-            label="Settings", command=lambda: print("Settings!"), accelerator="Ctrl+,"
+            label="Settings",
+            command=lambda: self.master.goto_settings(),
+            accelerator="Ctrl+,",
         )
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.master.destroy)

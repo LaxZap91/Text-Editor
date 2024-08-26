@@ -6,6 +6,7 @@ from ttkbootstrap.dialogs import MessageDialog
 
 from text_box import TextBox
 from menu_bar import MenuBar
+from settings import SettingsMenu
 
 
 class TextEditorApp(ttk.Window):
@@ -25,6 +26,7 @@ class TextEditorApp(ttk.Window):
         )
 
         self.create_plain_text_editor()
+        self.create_settings()
 
         self.update_clock()
 
@@ -33,15 +35,34 @@ class TextEditorApp(ttk.Window):
         self.menu = MenuBar(self)
         self.place_plain_text_editor()
 
+    def create_settings(self):
+        self.settings_menu = SettingsMenu(self)
+
     def place_plain_text_editor(self):
         self.textbox.pack(fill="both", expand=True)
         self.configure(menu=self.menu)
-        self.create_keybinds()
+        self.create_plain_text_editor_keybinds()
+
+    def place_settings(self):
+        self.configure(menu=self.settings_menu)
 
     def remove_plain_text_editor(self):
         self.textbox.pack_forget()
         self.configure(menu="")
-        self.remove_keybinds()
+        self.remove_plain_text_editor_keybinds()
+
+    def remove_settings(self):
+        self.configure(menu="")
+
+    def goto_plain_text_editor(self):
+        self.remove_settings()
+        self.place_plain_text_editor()
+        self.set_title()
+
+    def goto_settings(self):
+        self.remove_plain_text_editor()
+        self.place_settings()
+        self.title("Settings")
 
     def new_file_command(self):
         if self.save_prompt() == "Cancel":
@@ -102,7 +123,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_file_path()
         self.set_title()
 
-    def create_keybinds(self):
+    def create_plain_text_editor_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
         self.bind_all("<Control-s>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
@@ -111,10 +132,11 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-0>", lambda _: self.textbox.set_zoom(100))
         self.bind_all("<Control-z>", lambda _: self.textbox.undo_text())
         self.bind_all("<Control-Shift-Z>", lambda _: self.textbox.redo_text())
+        self.bind_all("<Control-,>", lambda _: self.goto_settings())
 
         self.protocol("WM_DELETE_WINDOW", self.plain_text_editor_on_close)
 
-    def remove_keybinds(self):
+    def remove_plain_text_editor_keybinds(self):
         self.unbind_all("<Control-o>")
         self.unbind_all("<Control-s>")
         self.unbind_all("<Control-Shift-S>")
@@ -123,6 +145,7 @@ class TextEditorApp(ttk.Window):
         self.unbind_all("<Control-0>")
         self.unbind_all("<Control-z>")
         self.unbind_all("<Control-Shift-Z>")
+        self.unbind_all("<Control-,>")
 
         self.protocol("WM_DELETE_WINDOW", self.destroy)
 
@@ -151,9 +174,12 @@ class TextEditorApp(ttk.Window):
                 return "Cancel"
 
     def set_title(self):
-        self.title(
-            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
-        )
+        if self.file_path is not None:
+            self.title(
+                f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+            )
+        else:
+            self.title("New File - Text Editor")
 
 
 if __name__ == "__main__":

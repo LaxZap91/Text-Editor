@@ -1,7 +1,9 @@
 import ttkbootstrap as ttk
 
 
-class Settings(ttk.Frame):
+class SettingsMenu(ttk.Menu):
     def __init__(self, master):
-        super().__init__(master)
-        print("hi")
+        self.master = master
+        super().__init__(master, tearoff=False)
+
+        self.add_command(label="Back", command=self.master.goto_plain_text_editor)
