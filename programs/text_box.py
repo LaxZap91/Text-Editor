@@ -1,8 +1,8 @@
-import ttkbootstrap as ttk
-from tkinter.font import Font
 from tkinter import TclError
-from status_bar import StatusBar
+from tkinter.font import Font
 from math import log10
+import ttkbootstrap as ttk
+from status_bar import StatusBar
 
 
 class TextBox(ttk.Frame):
