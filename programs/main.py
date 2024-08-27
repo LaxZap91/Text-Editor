@@ -7,6 +7,7 @@ from ttkbootstrap.dialogs import MessageDialog
 from text_box import TextBox
 from editor_menu import MenuBar
 from settings_menu import SettingsMenu
+from settings import Settings
 
 
 class TextEditorApp(ttk.Window):
@@ -28,14 +29,16 @@ class TextEditorApp(ttk.Window):
         self.create_editor()
         self.create_settings()
 
+        self.place_editor()
+
         self.update_clock()
 
     def create_editor(self):
         self.textbox = TextBox(self)
         self.editor_menu = MenuBar(self)
-        self.place_editor()
 
     def create_settings(self):
+        self.settings = Settings(self)
         self.settings_menu = SettingsMenu(self)
 
     def place_editor(self):
@@ -44,6 +47,7 @@ class TextEditorApp(ttk.Window):
         self.create_editor_keybinds()
 
     def place_settings(self):
+        self.settings.pack(fill="both", expand=True)
         self.configure(menu=self.settings_menu)
 
     def remove_editor(self):
@@ -52,8 +56,8 @@ class TextEditorApp(ttk.Window):
         self.remove_editor_keybinds()
 
     def remove_settings(self):
+        self.settings.pack_forget()
         self.configure(menu="")
-        self.settings_menu.remove_current_frame()
 
     def goto_editor(self):
         self.remove_settings()
@@ -63,7 +67,6 @@ class TextEditorApp(ttk.Window):
     def goto_settings(self):
         self.remove_editor()
         self.place_settings()
-        self.settings_menu.place_setting_frame_1()
         self.title("Settings")
 
     def new_file_command(self):
