@@ -59,9 +59,7 @@ class StatusBar(ttk.Frame):
         self.word_count_label.update_width()
 
     def update_zoom_percent(self):
-        self.zoom_level.set(
-            f"{(self.master.font.actual("size") - self.master.default_text_size) * 10 + 100}%"
-        )
+        self.zoom_level.set(f"{(self.master.font.actual("size") - 10) * 10 + 100}%")
         self.zoom_label.update_width()
 
     def update_is_saved(self):

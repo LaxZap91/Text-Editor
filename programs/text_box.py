@@ -15,7 +15,6 @@ class TextBox(ttk.Frame):
         self.hscroll_needed = False
         self.saved_state = "\n"
         self.current_line_numbers = 1
-        self.default_text_size = 11
 
         super().__init__(master)
 
@@ -26,7 +25,10 @@ class TextBox(ttk.Frame):
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1, uniform=1)
 
-        self.font = Font(family="Consolas", size=self.default_text_size)
+        self.font = Font(
+            family=self.master.font_family.get(),
+            size=11,
+        )
 
         self.create_wigits()
         self.configure_wigits()
@@ -157,9 +159,7 @@ class TextBox(ttk.Frame):
         self.status_bar.update_zoom_percent()
 
     def set_zoom(self, size):
-        self.font.configure(
-            size=max(1, min(51, int((size - 100) / 10 + self.default_text_size)))
-        )
+        self.font.configure(size=max(1, min(51, int((size - 100) / 10 + 11))))
         self.status_bar.update_zoom_percent()
 
     def vscroll(self, action, position, type=None):

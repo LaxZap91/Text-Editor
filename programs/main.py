@@ -26,6 +26,9 @@ class TextEditorApp(ttk.Window):
             minsize=(300, 150),
         )
 
+        self.font_family = ttk.StringVar(value="Consolas")
+        self.font_style = ttk.StringVar(value="Regular")
+
         self.create_editor()
         self.create_settings()
 
@@ -62,6 +65,8 @@ class TextEditorApp(ttk.Window):
     def goto_editor(self):
         self.remove_settings()
         self.place_editor()
+        self.update_font_family()
+        self.update_font_style()
         self.set_title()
 
     def goto_settings(self):
@@ -185,6 +190,26 @@ class TextEditorApp(ttk.Window):
             )
         else:
             self.title("New File - Text Editor")
+
+    def update_font_family(self):
+        zoom = self.textbox.get_zoom()
+        self.textbox.set_zoom(100)
+        self.textbox.set_zoom(zoom)
+
+        self.textbox.font.configure(family=self.font_family.get())
+
+    def update_font_style(self):
+        style = self.font_style.get()
+
+        match style:
+            case "Bold Italic":
+                self.textbox.font.configure(weight="bold", slant="italic")
+            case "Bold":
+                self.textbox.font.configure(weight="bold", slant="roman")
+            case "Italic":
+                self.textbox.font.configure(weight="normal", slant="italic")
+            case "Regular":
+                self.textbox.font.configure(weight="normal", slant="roman")
 
 
 if __name__ == "__main__":
