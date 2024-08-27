@@ -53,6 +53,7 @@ class TextEditorApp(ttk.Window):
 
     def remove_settings(self):
         self.configure(menu="")
+        self.settings_menu.remove_current_frame()
 
     def goto_editor(self):
         self.remove_settings()
@@ -62,6 +63,7 @@ class TextEditorApp(ttk.Window):
     def goto_settings(self):
         self.remove_editor()
         self.place_settings()
+        self.settings_menu.place_setting_frame_1()
         self.title("Settings")
 
     def new_file_command(self):
