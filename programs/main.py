@@ -2,7 +2,7 @@ from os.path import basename
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 import ttkbootstrap as ttk
-from ttkbootstrap.dialogs import MessageDialog
+from ttkbootstrap.dialogs import MessageDialog, FontDialog
 
 from text_box import TextBox
 from editor_menu import MenuBar
@@ -26,15 +26,13 @@ class TextEditorApp(ttk.Window):
             minsize=(300, 150),
         )
 
-        self.font_family = ttk.StringVar(value="Consolas")
-        self.font_style = ttk.StringVar(value="Regular")
-
-        self.create_editor()
         self.create_settings()
+        self.create_editor()
 
         self.place_editor()
 
         self.update_clock()
+        FontDialog().show()
 
     def create_editor(self):
         self.textbox = TextBox(self)
@@ -65,11 +63,11 @@ class TextEditorApp(ttk.Window):
     def goto_editor(self):
         self.remove_settings()
         self.place_editor()
-        self.update_font_family()
-        self.update_font_style()
+        self.update_font()
         self.set_title()
 
     def goto_settings(self):
+        self.old_size = self.settings.font_size.get()
         self.remove_editor()
         self.place_settings()
         self.title("Settings")
@@ -119,7 +117,6 @@ class TextEditorApp(ttk.Window):
             confirmoverwrite=True,
             defaultextension=".txt",
             filetypes=self.allowed_file_types,
-            initialfile=self.textbox.get_text().split("\n")[0],
         )
         if file_path.strip() == "":
             return
@@ -191,25 +188,15 @@ class TextEditorApp(ttk.Window):
         else:
             self.title("New File - Text Editor")
 
-    def update_font_family(self):
-        zoom = self.textbox.get_zoom()
-        self.textbox.set_zoom(100)
+    def update_font(self):
+        zoom = self.textbox.get_zoom_percent(self.old_size)
+        self.textbox.font.configure(
+            family=self.settings.font_family.get(),
+            weight=self.settings.font_weight.get().lower(),
+            slant=self.settings.font_slant.get().lower(),
+            size=self.settings.font_size.get(),
+        )
         self.textbox.set_zoom(zoom)
-
-        self.textbox.font.configure(family=self.font_family.get())
-
-    def update_font_style(self):
-        style = self.font_style.get()
-
-        match style:
-            case "Bold Italic":
-                self.textbox.font.configure(weight="bold", slant="italic")
-            case "Bold":
-                self.textbox.font.configure(weight="bold", slant="roman")
-            case "Italic":
-                self.textbox.font.configure(weight="normal", slant="italic")
-            case "Regular":
-                self.textbox.font.configure(weight="normal", slant="roman")
 
 
 if __name__ == "__main__":

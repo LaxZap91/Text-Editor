@@ -26,8 +26,10 @@ class TextBox(ttk.Frame):
         self.grid_rowconfigure(0, weight=1, uniform=1)
 
         self.font = Font(
-            family=self.master.font_family.get(),
-            size=11,
+            family=self.master.settings.font_family.get(),
+            weight=self.master.settings.font_weight.get().lower(),
+            slant=self.master.settings.font_slant.get().lower(),
+            size=self.master.settings.font_size.get(),
         )
 
         self.create_wigits()
@@ -155,12 +157,36 @@ class TextBox(ttk.Frame):
         )
 
     def increment_zoom(self, size):
-        self.font.configure(size=max(1, min(51, self.font.actual("size") + size)))
+        self.font.configure(
+            size=max(
+                self.master.settings.font_size.get() - 9,
+                min(
+                    self.master.settings.font_size.get() + 40,
+                    self.font.actual("size") + size,
+                ),
+            )
+        )
         self.status_bar.update_zoom_percent()
 
-    def set_zoom(self, size):
-        self.font.configure(size=max(1, min(51, int((size - 100) / 10 + 11))))
+    def set_zoom(self, size_percent):
+        self.font.configure(
+            size=max(
+                self.master.settings.font_size.get() - 9,
+                min(
+                    self.master.settings.font_size.get() + 40,
+                    int(size_percent / 10)
+                    + (self.master.settings.font_size.get() - 10),
+                ),
+            ),
+        )
         self.status_bar.update_zoom_percent()
+
+    def get_zoom_percent(self, reference=None):
+        if reference is not None:
+            return (int(self.font.actual("size")) - (reference - 10)) * 10
+        return (
+            int(self.font.actual("size")) - (self.master.settings.font_size.get() - 10)
+        ) * 10
 
     def vscroll(self, action, position, type=None):
         self.text.yview_moveto(position)
