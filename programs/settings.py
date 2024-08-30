@@ -1,6 +1,5 @@
 import ttkbootstrap as ttk
 from ttkbootstrap import font
-from tkinter.font import Font
 
 
 class Settings(ttk.Notebook):
@@ -20,7 +19,7 @@ class Settings(ttk.Notebook):
         self.add(self.frame_2, text="Frame 2")
 
     def create_text_formating_frame(self):
-        self.text_formating_frame = ttk.Frame()
+        self.text_formating_frame = ttk.Frame(self)
 
         self.font_family = ttk.StringVar(value="Consolas")
         self.families = sorted(
@@ -53,7 +52,7 @@ class Settings(ttk.Notebook):
 
         self.font_slant = ttk.StringVar(value="Roman")
         self.font_slant_frame = ttk.Frame(self.text_formating_frame)
-        self.font_slant_label = ttk.Label(self.font_slant_frame, text="Weight")
+        self.font_slant_label = ttk.Label(self.font_slant_frame, text="Slant")
         self.font_slant_select = ttk.Combobox(
             self.font_slant_frame,
             textvariable=self.font_slant,
