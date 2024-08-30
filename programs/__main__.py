@@ -2,10 +2,12 @@ from os.path import basename
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 import ttkbootstrap as ttk
-from ttkbootstrap.dialogs import MessageDialog
+from ttkbootstrap.dialogs import MessageDialog, FontDialog
 
 from text_box import TextBox
-from menu_bar import MenuBar
+from editor_menu import MenuBar
+from settings_menu import SettingsMenu
+from settings import Settings
 
 
 class TextEditorApp(ttk.Window):
@@ -24,24 +26,51 @@ class TextEditorApp(ttk.Window):
             minsize=(300, 150),
         )
 
-        self.create_plain_text_editor()
+        self.create_settings()
+        self.create_editor()
+
+        self.place_editor()
 
         self.update_clock()
+        FontDialog().show()
 
-    def create_plain_text_editor(self):
+    def create_editor(self):
         self.textbox = TextBox(self)
-        self.menu = MenuBar(self)
-        self.place_plain_text_editor()
+        self.editor_menu = MenuBar(self)
 
-    def place_plain_text_editor(self):
+    def create_settings(self):
+        self.settings = Settings(self)
+        self.settings_menu = SettingsMenu(self)
+
+    def place_editor(self):
         self.textbox.pack(fill="both", expand=True)
-        self.configure(menu=self.menu)
-        self.create_keybinds()
+        self.configure(menu=self.editor_menu)
+        self.create_editor_keybinds()
 
-    def remove_plain_text_editor(self):
+    def place_settings(self):
+        self.settings.pack(fill="both", expand=True)
+        self.configure(menu=self.settings_menu)
+
+    def remove_editor(self):
         self.textbox.pack_forget()
         self.configure(menu="")
-        self.remove_keybinds()
+        self.remove_editor_keybinds()
+
+    def remove_settings(self):
+        self.settings.pack_forget()
+        self.configure(menu="")
+
+    def goto_editor(self):
+        self.remove_settings()
+        self.place_editor()
+        self.update_font()
+        self.set_title()
+
+    def goto_settings(self):
+        self.old_size = self.settings.font_size.get()
+        self.remove_editor()
+        self.place_settings()
+        self.title("Settings")
 
     def new_file_command(self):
         if self.save_prompt() == "Cancel":
@@ -88,7 +117,6 @@ class TextEditorApp(ttk.Window):
             confirmoverwrite=True,
             defaultextension=".txt",
             filetypes=self.allowed_file_types,
-            initialfile=self.textbox.get_text().split("\n")[0],
         )
         if file_path.strip() == "":
             return
@@ -102,7 +130,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_file_path()
         self.set_title()
 
-    def create_keybinds(self):
+    def create_editor_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
         self.bind_all("<Control-s>", lambda _: self.save_command())
         self.bind_all("<Control-Shift-S>", lambda _: self.save_as_command())
@@ -111,10 +139,11 @@ class TextEditorApp(ttk.Window):
         self.bind_all("<Control-0>", lambda _: self.textbox.set_zoom(100))
         self.bind_all("<Control-z>", lambda _: self.textbox.undo_text())
         self.bind_all("<Control-Shift-Z>", lambda _: self.textbox.redo_text())
+        self.bind_all("<Control-,>", lambda _: self.goto_settings())
 
-        self.protocol("WM_DELETE_WINDOW", self.plain_text_editor_on_close)
+        self.protocol("WM_DELETE_WINDOW", self.editor_on_close)
 
-    def remove_keybinds(self):
+    def remove_editor_keybinds(self):
         self.unbind_all("<Control-o>")
         self.unbind_all("<Control-s>")
         self.unbind_all("<Control-Shift-S>")
@@ -123,6 +152,7 @@ class TextEditorApp(ttk.Window):
         self.unbind_all("<Control-0>")
         self.unbind_all("<Control-z>")
         self.unbind_all("<Control-Shift-Z>")
+        self.unbind_all("<Control-,>")
 
         self.protocol("WM_DELETE_WINDOW", self.destroy)
 
@@ -131,7 +161,7 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_is_saved()
         self.after(10, self.update_clock)
 
-    def plain_text_editor_on_close(self):
+    def editor_on_close(self):
         if self.save_prompt() == "Cancel":
             return
         self.destroy()
@@ -151,9 +181,22 @@ class TextEditorApp(ttk.Window):
                 return "Cancel"
 
     def set_title(self):
-        self.title(
-            f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+        if self.file_path is not None:
+            self.title(
+                f"{'.'.join(basename(self.file_path).split('.')[:-1])} - Text Editor"
+            )
+        else:
+            self.title("New File - Text Editor")
+
+    def update_font(self):
+        zoom = self.textbox.get_zoom_percent(self.old_size)
+        self.textbox.font.configure(
+            family=self.settings.font_family.get(),
+            weight=self.settings.font_weight.get().lower(),
+            slant=self.settings.font_slant.get().lower(),
+            size=self.settings.font_size.get(),
         )
+        self.textbox.set_zoom(zoom)
 
 
 if __name__ == "__main__":
