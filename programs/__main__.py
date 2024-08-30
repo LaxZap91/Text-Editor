@@ -1,8 +1,9 @@
 from os.path import basename
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+import json
 
 import ttkbootstrap as ttk
-from ttkbootstrap.dialogs import MessageDialog, FontDialog
+from ttkbootstrap.dialogs import MessageDialog
 
 from text_box import TextBox
 from editor_menu import MenuBar
@@ -20,6 +21,8 @@ class TextEditorApp(ttk.Window):
             ("All files (*)", "*"),
         ]
 
+        self.open_settings()
+
         super().__init__(
             "New File - Text Editor",
             size=(750, 600),
@@ -32,7 +35,6 @@ class TextEditorApp(ttk.Window):
         self.place_editor()
 
         self.update_clock()
-        FontDialog().show()
 
     def create_editor(self):
         self.textbox = TextBox(self)
@@ -63,7 +65,7 @@ class TextEditorApp(ttk.Window):
     def goto_editor(self):
         self.remove_settings()
         self.place_editor()
-        self.update_font()
+        self.update_settings()
         self.set_title()
 
     def goto_settings(self):
@@ -130,6 +132,26 @@ class TextEditorApp(ttk.Window):
         self.textbox.status_bar.update_file_path()
         self.set_title()
 
+    def open_settings(self):
+        with open("settings.json", "r") as json_file:
+            data = json.load(json_file)
+            self.font_family_default = data["text_formating"]["font_family"]
+            self.font_weight_default = data["text_formating"]["font_weight"]
+            self.font_slant_default = data["text_formating"]["font_slant"]
+            self.font_size_default = data["text_formating"]["font_size"]
+
+    def save_settings(self):
+        with open("settings.json", "w") as json_file:
+            data = {
+                "text_formating": {
+                    "font_family": self.settings.font_family.get(),
+                    "font_weight": self.settings.font_weight.get(),
+                    "font_slant": self.settings.font_slant.get(),
+                    "font_size": self.settings.font_size.get(),
+                }
+            }
+            json.dump(data, json_file, indent=4)
+
     def create_editor_keybinds(self):
         self.bind_all("<Control-o>", lambda _: self.open_command())
         self.bind_all("<Control-s>", lambda _: self.save_command())
@@ -188,12 +210,12 @@ class TextEditorApp(ttk.Window):
         else:
             self.title("New File - Text Editor")
 
-    def update_font(self):
+    def update_settings(self):
         zoom = self.textbox.get_zoom_percent(self.old_size)
         self.textbox.font.configure(
             family=self.settings.font_family.get(),
-            weight=self.settings.font_weight.get().lower(),
-            slant=self.settings.font_slant.get().lower(),
+            weight=self.settings.font_weight.get(),
+            slant=self.settings.font_slant.get(),
             size=self.settings.font_size.get(),
         )
         self.textbox.set_zoom(zoom)
@@ -202,3 +224,4 @@ class TextEditorApp(ttk.Window):
 if __name__ == "__main__":
     app = TextEditorApp()
     app.mainloop()
+    app.save_settings()
